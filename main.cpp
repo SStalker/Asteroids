@@ -1,12 +1,3 @@
-//
-//  main.cpp
-//  RealtimeRending
-//
-//  Created by Philipp Lensing on 22.10.14.
-//  Copyright (c) 2014 Philipp Lensing. All rights reserved.
-//
-
-
 #include <iostream>
 #include <math.h>
 #include <unistd.h>
@@ -27,6 +18,8 @@
 #include "Texture.h"
 #include "global.h"
 
+#include "Spaceship.h"
+
 
 // Model that should be loaded
 const char* g_ModelToLoad = "sponza/sponza.obj";
@@ -38,11 +31,13 @@ const unsigned int g_WindowHeight=768;
 // light position (point light)
 const Vector g_LightPos = Vector( 0,8,0);
 
-
+float oldTime = 0;
 
 
 Camera g_Camera;
 Model g_Model;
+Spaceship sp;
+
 int g_MouseButton = 0;
 int g_MouseState = 0;
 
@@ -79,7 +74,7 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutMotionFunc(MouseMoveCallback);
 
-    int option = 0;
+    /*int option = 0;
     int area = -1, perimeter = -1;
     string  vertexShader = "", fragmentShader = "";
 
@@ -102,10 +97,15 @@ int main(int argc, char * argv[])
 
     cout << "Current params: " << endl;
     cout << "VertexShader: " << vertexShader << endl;
-    cout << "FragmentShader: " << fragmentShader << endl;
+    cout << "FragmentShader: " << fragmentShader << endl;*/
 
-    g_Model.load(g_ModelToLoad, vertexShader.c_str(), fragmentShader.c_str());
-    
+    //g_Model.load(g_ModelToLoad, vertexShader.c_str(), fragmentShader.c_str());
+    //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
+    if(!sp.load("assets/model/SpaceShip2.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl", Vector(0,0,0))){
+        cout << "Could not load model";
+        exit(6);
+    }
+
     glutMainLoop();    
 }
 
@@ -196,9 +196,16 @@ void KeyboardCallback( unsigned char key, int x, int y)
 
 void DrawScene()
 {
+    float newtime = glutGet(GLUT_ELAPSED_TIME)*1.0 ;
+    float deltaTime = (newtime-oldTime)/1000.0;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
+
+    Vector currentPos = sp.getPos();
+    g_Camera.setPosition(Vector(currentPos.X, currentPos.Y+10, currentPos.Z-15));
+    g_Camera.setTarget(Vector(currentPos));
     g_Camera.apply();
     
     DrawGroundGrid();
@@ -207,15 +214,17 @@ void DrawScene()
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
-    if(g_RenderMode == RENDERMODE_LINES)
+    /*if(g_RenderMode == RENDERMODE_LINES)
     {
         glDisable(GL_LIGHTING);
-        g_Model.drawLines();
+        sp.drawLines();
         glEnable(GL_LIGHTING);
     }
     else if(g_RenderMode== RENDERMODE_TRIANGLES)
-        g_Model.drawTriangles();
-    
+        sp.drawTriangles();
+    */
+    sp.update(deltaTime);
+    sp.draw();
     glutSwapBuffers();
     glutPostRedisplay();
     

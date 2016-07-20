@@ -199,13 +199,15 @@ bool Model::load( const char* Filename, bool FitSize)
 
 bool Model::load( const char* Filename, const char* VertexShader, const char* FragmentShader, bool FitSize){
 
-    load(Filename, FitSize);
+    bool success = load(Filename, FitSize);
 
     //build Vertices for texture
     buildVerteciesForTexture();
 
-    if(!sp.load(VertexShader, FragmentShader))
+    if(!sp.load(VertexShader, FragmentShader)){
+        cout << "V or F" << endl;
         exit(2);
+    }
 
     string* ErrorMsg = new string();
 
@@ -215,6 +217,8 @@ bool Model::load( const char* Filename, const char* VertexShader, const char* Fr
     }
 
     sp.activate();
+
+    return success;
 }
 
 bool Model::loadMtl(string filename, string path)
