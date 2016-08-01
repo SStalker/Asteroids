@@ -20,6 +20,27 @@
 
 #include "Spaceship.h"
 
+class Debug{
+public:
+    static void drawLine(const Vector a, const Vector b, const Color c){
+
+        //cout << "Color: " << c << endl;
+        glLineWidth(3.5);
+        glColor3f(c.R, c.G, c.B);
+        glBegin(GL_LINES);
+        glVertex3f(a.X, a.Y, a.Z);
+        glVertex3f(b.X, b.Y, b.Z);
+        glEnd();
+    }
+
+    static void Drawmatrix(const Matrix& m)
+    {
+        drawLine(m.translation(), m.translation() + m.right()*10, Color(1,0,0));
+        drawLine(m.translation(), m.translation() + m.up()*10, Color(0,1,0));
+        drawLine(m.translation(), m.translation() + m.forward()*10, Color(0,0,1));
+    }
+};
+
 
 // Model that should be loaded
 const char* g_ModelToLoad = "sponza/sponza.obj";
@@ -27,6 +48,9 @@ const char* g_ModelToLoad = "sponza/sponza.obj";
 // window x and y size
 const unsigned int g_WindowWidth=1024;
 const unsigned int g_WindowHeight=768;
+
+int centerX = (float)g_WindowWidth / 2.0;
+int centerY = (float)g_WindowHeight / 2.0;
 
 // light position (point light)
 const Vector g_LightPos = Vector( 0,8,0);
@@ -40,6 +64,10 @@ Spaceship sp;
 
 int g_MouseButton = 0;
 int g_MouseState = 0;
+
+
+float g_forward = 0;
+float g_right = 0;
 
 void SetupDefaultGLSettings();
 void DrawScene();
@@ -63,16 +91,21 @@ int main(int argc, char * argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     glutCreateWindow("CG Praktikum");
+		// making the window full screen
+		glutFullScreen();
+		glutSetCursor(GLUT_CURSOR_NONE);
 #ifdef WIN32
 	glewInit();
 #endif
-    
+
     SetupDefaultGLSettings();
-    
+
     glutDisplayFunc(DrawScene);
     glutMouseFunc(MouseCallback);
     glutKeyboardFunc(KeyboardCallback);
-    glutMotionFunc(MouseMoveCallback);
+    glutPassiveMotionFunc(MouseMoveCallback);
+
+
 
     /*int option = 0;
     int area = -1, perimeter = -1;
@@ -82,7 +115,7 @@ int main(int argc, char * argv[])
     //The two options l and b expect numbers as argument
     while ((option = getopt(argc, argv,"f:v:")) != -1) {
         switch (option) {
-             case 'f' : fragmentShader = optarg; 
+             case 'f' : fragmentShader = optarg;
                  break;
              case 'v' : vertexShader = optarg;
                  break;
@@ -101,12 +134,12 @@ int main(int argc, char * argv[])
 
     //g_Model.load(g_ModelToLoad, vertexShader.c_str(), fragmentShader.c_str());
     //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
-    if(!sp.load("assets/model/SpaceShip2.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl", Vector(0,0,0))){
+    if(!sp.load("assets/model/SpaceShip2.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl", Vector(0,0,0))){
         cout << "Could not load model";
         exit(6);
     }
 
-    glutMainLoop();    
+    glutMainLoop();
 }
 
 
@@ -120,10 +153,10 @@ void SetupDefaultGLSettings()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(65, (double)g_WindowWidth/(double)g_WindowHeight, 0.045f, 1000.0f);
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
- 
+
     // Setup Light Color
     GLfloat ambientLight[] = { 0.5f, 0.5f, 0.5f, 0.0f };
     GLfloat diffuseLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -140,7 +173,7 @@ void SetupDefaultGLSettings()
     glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
     glMateriali(GL_FRONT, GL_SHININESS, 30);
     glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
-    
+
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -149,11 +182,11 @@ void SetupDefaultGLSettings()
 
 void DrawGroundGrid()
 {
-    const float GridSize=10.0f;
-    const unsigned int GridSegments=20;
+    const float GridSize=1000.0f;
+    const unsigned int GridSegments=2000;
     const float GridStep=GridSize/(float)GridSegments;
     const float GridOrigin=-GridSize*0.5f;
-    
+
     glDisable( GL_LIGHTING);
     glBegin(GL_LINES);
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -162,7 +195,7 @@ void DrawGroundGrid()
             float itpos=GridOrigin + GridStep*(float)i;
             glVertex3f(itpos, 0, GridOrigin);
             glVertex3f(itpos, 0, GridOrigin+GridSize);
-        
+
             glVertex3f(GridOrigin, 0, itpos);
             glVertex3f(GridOrigin+GridSize, 0, itpos);
 
@@ -181,53 +214,76 @@ void MouseCallback(int Button, int State, int x, int y)
 
 void MouseMoveCallback( int x, int y)
 {
-    g_Camera.mouseInput(x,y,g_MouseButton,g_MouseState);
+
+		int mouseX = x-centerX;
+		int mouseY = y-centerY;
+
+		if(mouseX == 0 && mouseY == 0)
+			return;
+
+		g_right = clamp((float)mouseX,-1.f,1.f);
+		g_forward = clamp((float)mouseY,-1.f,1.f);
+		//cout << "x: " <<  << " Y: " <<  << endl;
+
+
+
+
+    //g_Camera.mouseInput(x,y,g_MouseButton,g_MouseState);
 }
 
 void KeyboardCallback( unsigned char key, int x, int y)
 {
-    if( key == 'l')
-        g_RenderMode=RENDERMODE_LINES;
-    else if( key == 't')
-        g_RenderMode=RENDERMODE_TRIANGLES;
-    
+	int mod = glutGetModifiers();
+    if( key == 'w')
+        sp.ThrustInput(1.f);
 }
 
 
 void DrawScene()
 {
-    float newtime = glutGet(GLUT_ELAPSED_TIME)*1.0 ;
+    float newtime = glutGet(GLUT_ELAPSED_TIME);
     float deltaTime = (newtime-oldTime)/1000.0;
+		oldTime = newtime;
+		sp.setDeltaTime(deltaTime);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
 
     Vector currentPos = sp.getPos();
-    g_Camera.setPosition(Vector(currentPos.X, currentPos.Y+10, currentPos.Z-15));
-    g_Camera.setTarget(Vector(currentPos));
+		Matrix cPos = sp.getPosition();
+		Matrix cRot = sp.getRotation();
+		Matrix combined = cPos*cRot;
+		Vector test = combined.translation();
+
+
+
+		cout << combined.forward() << endl;
+    g_Camera.setPosition(Vector(combined.forward().X, combined.forward().Y, combined.forward().Z-5));
+  	g_Camera.setTarget(cRot.forward()*(-1.f));
     g_Camera.apply();
-    
+
     DrawGroundGrid();
-    
+
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
-    /*if(g_RenderMode == RENDERMODE_LINES)
-    {
-        glDisable(GL_LIGHTING);
-        sp.drawLines();
-        glEnable(GL_LIGHTING);
-    }
-    else if(g_RenderMode== RENDERMODE_TRIANGLES)
-        sp.drawTriangles();
-    */
+
+		// Set the cursor back to center;
+		glutWarpPointer( centerX, centerY );
+
+		//sp.steer(g_forward, g_right);
+		sp.MoveUpInput(g_forward);
+		sp.MoveRightInput(-1*g_right);
+
     sp.update(deltaTime);
     sp.draw();
+		Debug::Drawmatrix(combined);
+
     glutSwapBuffers();
     glutPostRedisplay();
-    
+
 }
 
 
@@ -281,7 +337,7 @@ int main(int argc, char** argv){
     //The two options l and b expect numbers as argument
     while ((option = getopt(argc, argv,"f:v:")) != -1) {
         switch (option) {
-             case 'f' : fragmentShader = optarg; 
+             case 'f' : fragmentShader = optarg;
                  break;
              case 'v' : vertexShader = optarg;
                  break;
@@ -315,21 +371,21 @@ int main(int argc, char** argv){
     //
     // initialize the glut system and create a window
     g_Model.load(g_ModelToLoad, "ToonVertexShader.glsl", "ToonFragmentShader.glsl");
-    
-    
+
+
     glutDisplayFunc(DrawScene);
     glutMouseFunc(MouseCallback);
     glutKeyboardFunc(KeyboardCallback);
     glutMotionFunc(MouseMoveCallback);
 
-  	
+
 	ShaderProgram sp;
 
 	bool hasLoaded = sp.load(vertexShader.c_str(), fragmentShader.c_str());
 
 	if(hasLoaded)
 		sp.compile(nullptr);
-	
+
 	glutMainLoop();
 	return 0;
 }
@@ -352,7 +408,7 @@ void KeyboardCallback( unsigned char key, int x, int y)
         g_RenderMode=RENDERMODE_LINES;
     else if( key == 't')
         g_RenderMode=RENDERMODE_TRIANGLES;
-    
+
 }
 
 
@@ -362,8 +418,8 @@ void DrawScene()
 
     glLoadIdentity();
     g_Camera.apply();
-   
-    
+
+
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
@@ -376,8 +432,8 @@ void DrawScene()
     }
     else if(g_RenderMode== RENDERMODE_TRIANGLES)
         g_Model.drawTriangles();
-    
+
     glutSwapBuffers();
     glutPostRedisplay();
-    
+
 }*/
