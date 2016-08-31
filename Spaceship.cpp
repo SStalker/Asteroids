@@ -8,6 +8,8 @@ Spaceship::Spaceship()
 	MaxSpeed = 5.f; // 5000
 	MinSpeed = 5.f; // 500
 	CurrentForwardSpeed = 2.5f; // 500
+    Pitch = 0.f;
+    Yaw = 0.f;
 }
 
 /*bool Spaceship::load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos)
@@ -24,19 +26,21 @@ Spaceship::Spaceship()
 
 void Spaceship::update(float deltaTime)
 {
-		cout << "CurrentForwardSpeed: " << CurrentForwardSpeed << endl;
-		cout << "Yaw: " << CurrentYawSpeed << " Pitch: " << CurrentPitchSpeed << " Roll: " << CurrentRollSpeed << endl;
 
     pos.Z = CurrentForwardSpeed * deltaTime;
-		pos.Y = CurrentPitchSpeed * deltaTime;
-		pos.X = CurrentYawSpeed * deltaTime;
+    pos.Y = CurrentPitchSpeed * deltaTime;
+    pos.X = CurrentYawSpeed * deltaTime;
 
-		cout << "forward: " << m_position.forward() << endl;
-		m_rotation.rotationYawPitchRoll(angleToRadian(CurrentYawSpeed), angleToRadian(CurrentPitchSpeed), 0.f);
+    m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
+    m_position.translation(0.f,0.f, pos.Z);
 
-		Vector v = m_rotation.forward();
+    Matrix combined = m_position * m_rotation;
 
-    m_position.translation(m_rotation.forward()*CurrentForwardSpeed*deltaTime);
+    g_Camera.setPosition(combined.forward()*-6.f + combined.up()*3.f + combined.translation());
+    g_Camera.setTarget(combined.translation() + combined.forward()*8.f);
+    g_Camera.setUp(combined.up());
+    g_Camera.apply();
+
 }
 
 void Spaceship::draw()
@@ -49,7 +53,8 @@ void Spaceship::draw()
 
 void Spaceship::steer(float forwardBackward, float leftRight)
 {
-
+    Pitch += (-1.f) * forwardBackward * deltaTime * 0.125f; // * CurrentPitchSpeed?
+    Yaw += (-1.f) * leftRight * deltaTime * 0.125f;
 }
 
 void Spaceship::ThrustInput(float Val)

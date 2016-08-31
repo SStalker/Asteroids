@@ -55,6 +55,12 @@ private:
 
 	/** Current roll speed */
 	float CurrentRollSpeed;
+
+    /** Pitch angle*/
+    float Pitch;
+
+    /** Yaw angle*/
+    float Yaw;
 };
 
 #endif

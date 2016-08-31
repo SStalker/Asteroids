@@ -185,25 +185,30 @@ void MouseCallback(int Button, int State, int x, int y)
     g_MouseButton = Button;
     g_MouseState = State;
     g_Camera.mouseInput(x,y,Button,State);
+
 }
 
 void MouseMoveCallback( int x, int y)
 {
 
-		int mouseX = x-centerX;
-		int mouseY = y-centerY;
+    int mouseX = x-centerX;
+    int mouseY = y-centerY;
 
-		if(mouseX == 0 && mouseY == 0)
-			return;
+    if(mouseX == 0 && mouseY == 0)
+        return;
 
-		g_right = clamp((float)mouseX,-1.f,1.f);
-		g_forward = clamp((float)mouseY,-1.f,1.f);
-		//cout << "x: " <<  << " Y: " <<  << endl;
+    g_right = clamp((float)mouseX,-1.f,1.f);
+    g_forward = clamp((float)mouseY,-1.f,1.f);
+    //cout << "x: " <<  << " Y: " <<  << endl;
 
+    sp.steer((-1.f)*g_forward,g_right);
 
+    // Set the cursor back to center;
+    glutWarpPointer( centerX, centerY );
 
-
-    //g_Camera.mouseInput(x,y,g_MouseButton,g_MouseState);
+//    sp.steer(g_forward, g_right);
+    sp.MoveUpInput(g_forward);
+    sp.MoveRightInput(-1*g_right);
 }
 
 void KeyboardCallback( unsigned char key, int x, int y)
@@ -216,49 +221,31 @@ void KeyboardCallback( unsigned char key, int x, int y)
 
 void DrawScene()
 {
+    glLoadIdentity();
     float newtime = glutGet(GLUT_ELAPSED_TIME);
     float deltaTime = (newtime-oldTime)/1000.0;
-		oldTime = newtime;
-		sp.setDeltaTime(deltaTime);
+    oldTime = newtime;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glLoadIdentity();
-
-    Vector currentPos = sp.getPos();
-		Matrix cPos = sp.getPosition();
-		Matrix cRot = sp.getRotation();
-		Matrix combined = cPos*cRot;
-		Vector combinedTranslation = combined.translation();
-		Vector test = combined.right().cross(combined.up());
-
-		Vector test2(	combined.translation().X,
-									combined.translation().Y+(combined.right().Y*3.f),
-									combined.translation().Z-2*combined.up().Z);
-
-		cout << cPos.translation() << endl;
-
-    g_Camera.setPosition(combined.forward()*-3.f + combined.up()*4.f + combined.translation());
-  	g_Camera.setTarget(combinedTranslation+combined.forward()*4.f);
-    g_Camera.apply();
-
-    DrawGroundGrid();
-
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
 
-		// Set the cursor back to center;
-		glutWarpPointer( centerX, centerY );
-
-		//sp.steer(g_forward, g_right);
-		sp.MoveUpInput(g_forward);
-		sp.MoveRightInput(-1*g_right);
-
+    sp.setDeltaTime(deltaTime);
     sp.update(deltaTime);
+
+    Matrix cPos = sp.getPosition();
+    Matrix cRot = sp.getRotation();
+    Matrix combined = cPos*cRot;
+
+//    g_Camera.setPosition(combined.forward()*-3.f + combined.up()*4.f + combined.translation());
+//    g_Camera.setTarget(combined.translation() + combined.forward()*4.f);
+//    g_Camera.apply();
+
+    DrawGroundGrid();
     sp.draw();
-		Debug::Drawmatrix(combined);
+        Debug::Drawmatrix(combined);
 
     glutSwapBuffers();
     glutPostRedisplay();

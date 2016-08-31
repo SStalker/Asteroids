@@ -1,6 +1,10 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+
+#include "Camera.h"
+
+extern Camera g_Camera;
 extern const Vector g_LightPos;
 
 inline float clamp(float val, float min, float max)
