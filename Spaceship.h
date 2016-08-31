@@ -20,18 +20,16 @@ public:
 	/** Bound to the thrust axis */
 	void ThrustInput(float Val);
 
-	/** Bound to the vertical axis */
-	void MoveUpInput(float Val);
-
-	/** Bound to the horizontal axis */
-	void MoveRightInput(float Val);
-
 	void setDeltaTime(float deltaTime);
 
 private:
 
 	/** Dont if good idea.. save current deltaTime here */
 	float deltaTime;
+
+    /** Distance from camera to ship */
+    float camShipBaseDistFoward;
+    float camShipBaseDistUp;
 
 	/** How quickly forward speed changes */
 	float Acceleration;
@@ -62,6 +60,9 @@ private:
 
     /** Yaw angle*/
     float Yaw;
+
+    /** Roll angle*/
+    float Roll;
 };
 
 #endif
