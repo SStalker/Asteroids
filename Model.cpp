@@ -169,7 +169,7 @@ bool Model::load( const char* Filename, bool FitSize)
     size_t pos = path.rfind("/");
 
 //    cout << "Pos: " << pos << endl;
-    
+
     if(pos == string::npos)
         path = "";
     else
@@ -578,7 +578,7 @@ void Model::createFace(string line)
                 // f 1 2 3
                 // No / found it must be 4 4 4 4 ....
             }
-        }    
+        }
     }
 
     //cout << "Status: " << status << endl;
@@ -593,7 +593,7 @@ void Model::createFace(string line)
         }
 
         f->hasTextureCoords = false;
-        faces.push_back(f);   
+        faces.push_back(f);
     }
     else if(status == 4)
     {
@@ -605,7 +605,7 @@ void Model::createFace(string line)
         f1->pidx[2] = gv[2];
         f2->pidx[0] = gv[0];
         f2->pidx[1] = gv[2];
-        f2->pidx[2] = gv[3];        
+        f2->pidx[2] = gv[3];
 
         m_VertexCount += 3*2;
 
@@ -650,7 +650,7 @@ void Model::createFace(string line)
 
         faces.push_back(f1);
         faces.push_back(f2);
-    } 
+    }
     else
     {
         cout << "Status: " << status << " " << line << endl;
@@ -687,9 +687,9 @@ void Model::createVertices()
 
             m_pVertices[i*3].TexcoordT = my_texture_points[TexIdx0]->Y;
             m_pVertices[i*3+1].TexcoordT = my_texture_points[TexIdx1]->Y;
-            m_pVertices[i*3+2].TexcoordT = my_texture_points[TexIdx2]->Y;    
+            m_pVertices[i*3+2].TexcoordT = my_texture_points[TexIdx2]->Y;
         }
-        
+
         a = m_pVertices[i*3].Position = *my_vertices[ PosIdx0];
         b = m_pVertices[i*3+1].Position = *my_vertices[ PosIdx1];
         c = m_pVertices[i*3+2].Position = *my_vertices[ PosIdx2];

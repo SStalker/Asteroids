@@ -1,19 +1,19 @@
 #ifndef SPACESHIP_H
 #define SPACESHIP_H
 
-#include "Model.h"
 #include "Matrix.h"
 #include "Vector.h"
 #include "global.h"
+#include "GameObject.h"
 
-class Spaceship{
+class Spaceship : public GameObject{
 
 public:
 	Spaceship();
 
 	void update(float deltaTime);
   void draw();
-  bool load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos);
+  //bool load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos);
 	void steer( float fowardBackward, float leftRight);
 
 	/** Bound to the thrust axis */
@@ -25,25 +25,9 @@ public:
 	/** Bound to the horizontal axis */
 	void MoveRightInput(float Val);
 
-
-	/* GETTER AND SETTER */
-	void setPosition(const Matrix& position);
-	const Matrix getPosition() const;
-
-	void setRotation(const Matrix& rotation);
-	const Matrix getRotation() const;
-
-	void setPos(const Vector& pos);
-	const Vector getPos() const;
-
 	void setDeltaTime(float deltaTime);
 
 private:
-	Model shipModel;
-
-	Vector pos;
-	Matrix m_position;
-	Matrix m_rotation;
 
 	/** Dont if good idea.. save current deltaTime here */
 	float deltaTime;

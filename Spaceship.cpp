@@ -4,46 +4,46 @@ Spaceship::Spaceship()
 {
 	// Set handling parameters
 	Acceleration = 0.5f; // 500
-	TurnSpeed = 75.f;
-	MaxSpeed = 15.f; // 5000
+	TurnSpeed = 5.f;
+	MaxSpeed = 5.f; // 5000
 	MinSpeed = 5.f; // 500
-	CurrentForwardSpeed = 0.f; // 500
+	CurrentForwardSpeed = 2.5f; // 500
 }
 
-bool Spaceship::load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos)
+/*bool Spaceship::load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos)
 {
 	bool success = false;
     //Load Model to variable
     cout << model << " " << VertexShader << " " << FragmentShader << endl;
-    success = shipModel.load(model, VertexShader, FragmentShader);
+    success = load(model, VertexShader, FragmentShader);
 
     pos = startPos;
 
     return success;
-}
+}*/
 
 void Spaceship::update(float deltaTime)
 {
-    //yaw += g_leftRight*deltaTime;
-		//pitch += g_forwardBackward*deltaTime;
-
 		cout << "CurrentForwardSpeed: " << CurrentForwardSpeed << endl;
 		cout << "Yaw: " << CurrentYawSpeed << " Pitch: " << CurrentPitchSpeed << " Roll: " << CurrentRollSpeed << endl;
 
     pos.Z = CurrentForwardSpeed * deltaTime;
 		pos.Y = CurrentPitchSpeed * deltaTime;
 		pos.X = CurrentYawSpeed * deltaTime;
-    //pos.Z += speed * deltaTime;
-		m_rotation.rotationYawPitchRoll(CurrentYawSpeed/100, CurrentPitchSpeed/100, 0.f);
-    m_position.translation(0.f,0.f, pos.Z);
-		//m_position *=m_rotation;
+
+		cout << "forward: " << m_position.forward() << endl;
+		m_rotation.rotationYawPitchRoll(angleToRadian(CurrentYawSpeed), angleToRadian(CurrentPitchSpeed), 0.f);
+
+		Vector v = m_rotation.forward();
+
+    m_position.translation(m_rotation.forward()*CurrentForwardSpeed*deltaTime);
 }
 
 void Spaceship::draw()
 {
     glPushMatrix();
         glMultMatrixf(m_position*m_rotation);
-        shipModel.drawTriangles();
+        drawTriangles();
     glPopMatrix();
 }
 
@@ -68,19 +68,27 @@ void Spaceship::ThrustInput(float Val)
 void Spaceship::MoveUpInput(float Val)
 {
 	// Target pitch speed is based in input
-	float TargetPitchSpeed = (Val * TurnSpeed * -1.f);
+	/*float TargetPitchSpeed = (Val * TurnSpeed * -1.f);
 
 	// When steering, we decrease pitch slightly
 	TargetPitchSpeed += (abs(CurrentYawSpeed) * -0.2f);
 
 	// Smoothly interpolate to target pitch speed
-	CurrentPitchSpeed = interpolateTo(CurrentPitchSpeed, TargetPitchSpeed, this->deltaTime, 2.f);
+	CurrentPitchSpeed = interpolateTo(CurrentPitchSpeed, TargetPitchSpeed, this->deltaTime, 2.f);*/
+	CurrentPitchSpeed += Val;
+
+	if(CurrentPitchSpeed >= 360 || CurrentPitchSpeed <= -360)
+		CurrentPitchSpeed = 0;
 }
 
 void Spaceship::MoveRightInput(float Val)
 {
+	CurrentYawSpeed += Val;
+
+	if(CurrentYawSpeed >= 360 || CurrentYawSpeed <= -360)
+		CurrentYawSpeed = 0;
 	// Target yaw speed is based on input
-	float TargetYawSpeed = (Val * TurnSpeed);
+	/*float TargetYawSpeed = (Val * TurnSpeed);
 
 	// Smoothly interpolate to target yaw speed
 	CurrentYawSpeed = interpolateTo(CurrentYawSpeed, TargetYawSpeed, this->deltaTime, 2.f);
@@ -90,40 +98,10 @@ void Spaceship::MoveRightInput(float Val)
 
 	// If turning, yaw value is used to influence roll
 	// If not turning, roll to reverse current roll value
-	//float TargetRollSpeed = bIsTurning ? (CurrentYawSpeed * 0.5f) : (m_rotation.Roll * -2.f);
+	float TargetRollSpeed = bIsTurning ? (CurrentYawSpeed * 0.5f) : (2.f * -2.f);
 
 	// Smoothly interpolate roll speed
-	//CurrentRollSpeed = interpolateTo(CurrentRollSpeed, TargetRollSpeed, this->deltaTime, 2.f);
-}
-
-void Spaceship::setPos(const Vector& position)
-{
-	this->pos = position;
-}
-
-const Vector Spaceship::getPos() const
-{
-	return this->pos;
-}
-
-void Spaceship::setPosition(const Matrix& position)
-{
-	this->m_position = position;
-}
-
-const Matrix Spaceship::getPosition() const
-{
-	return this->m_position;
-}
-
-void Spaceship::setRotation(const Matrix& rotation)
-{
-	this->m_rotation = rotation;
-}
-
-const Matrix Spaceship::getRotation() const
-{
-	return this->m_rotation;
+	CurrentRollSpeed = interpolateTo(CurrentRollSpeed, TargetRollSpeed, this->deltaTime, 2.f);*/
 }
 
 void Spaceship::setDeltaTime(float deltaTime)

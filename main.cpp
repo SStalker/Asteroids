@@ -106,38 +106,13 @@ int main(int argc, char * argv[])
     glutPassiveMotionFunc(MouseMoveCallback);
 
 
-
-    /*int option = 0;
-    int area = -1, perimeter = -1;
-    string  vertexShader = "", fragmentShader = "";
-
-    //Specifying the expected options
-    //The two options l and b expect numbers as argument
-    while ((option = getopt(argc, argv,"f:v:")) != -1) {
-        switch (option) {
-             case 'f' : fragmentShader = optarg;
-                 break;
-             case 'v' : vertexShader = optarg;
-                 break;
-             default: printf("Usage: %s –f beispiel_fragmentshader.glsl –v beispiel_vertexshader.glsl\n", argv[0]);
-                 exit(EXIT_FAILURE);
-        }
-    }
-    if (vertexShader == "" && fragmentShader == "") {
-        printf("Usage: %s –f beispiel_fragmentshader.glsl –v beispiel_vertexshader.glsl\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    cout << "Current params: " << endl;
-    cout << "VertexShader: " << vertexShader << endl;
-    cout << "FragmentShader: " << fragmentShader << endl;*/
-
-    //g_Model.load(g_ModelToLoad, vertexShader.c_str(), fragmentShader.c_str());
     //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
-    if(!sp.load("assets/model/SpaceShip2.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl", Vector(0,0,0))){
+    if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
         cout << "Could not load model";
         exit(6);
     }
+
+		sp.setPos(Vector(0.f,0.f,0.f));
 
     glutMainLoop();
 }
@@ -169,10 +144,10 @@ void SetupDefaultGLSettings()
     float diff[4] = {1,1,1,1};
     float amb[4]  = {0.2f,0.2f,0.2f,1};
     float spec[4] = {0.5f,0.5f,0.5f,1};
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, diff);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-    glMateriali(GL_FRONT, GL_SHININESS, 30);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 300);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
@@ -254,13 +229,17 @@ void DrawScene()
 		Matrix cPos = sp.getPosition();
 		Matrix cRot = sp.getRotation();
 		Matrix combined = cPos*cRot;
-		Vector test = combined.translation();
+		Vector combinedTranslation = combined.translation();
+		Vector test = combined.right().cross(combined.up());
 
+		Vector test2(	combined.translation().X,
+									combined.translation().Y+(combined.right().Y*3.f),
+									combined.translation().Z-2*combined.up().Z);
 
+		cout << cPos.translation() << endl;
 
-		cout << combined.forward() << endl;
-    g_Camera.setPosition(Vector(combined.forward().X, combined.forward().Y, combined.forward().Z-5));
-  	g_Camera.setTarget(cRot.forward()*(-1.f));
+    g_Camera.setPosition(combined.forward()*-3.f + combined.up()*4.f + combined.translation());
+  	g_Camera.setTarget(combinedTranslation+combined.forward()*4.f);
     g_Camera.apply();
 
     DrawGroundGrid();
@@ -285,155 +264,3 @@ void DrawScene()
     glutPostRedisplay();
 
 }
-
-
-
-/*
-#include <GL/gl.h>
-#include <GL/glut.h>
-#include <unistd.h>
-
-#include "Camera.h"
-#include "Model.h"
-#include "ShaderProgram.h"
-
-// Model that should be loaded
-const char* g_ModelToLoad = "sponza/sponza.obj";
-
-// window x and y size
-const unsigned int g_WindowWidth=1024;
-const unsigned int g_WindowHeight=768;
-
-// light position (point light)
-const Vector g_LightPos = Vector( 0,8,0);
-
-enum RenderMode
-{
-    RENDERMODE_LINES,
-    RENDERMODE_TRIANGLES,
-    LAST_RENDERMODE
-};
-
-RenderMode g_RenderMode = RENDERMODE_LINES;
-
-
-Camera g_Camera;
-Model g_Model;
-int g_MouseButton = 0;
-int g_MouseState = 0;
-
-void DrawScene();
-void MouseCallback(int Button, int State, int x, int y);
-void MouseMoveCallback(int x, int y);
-void KeyboardCallback( unsigned char key, int x, int y);
-
-int main(int argc, char** argv){
-
-    int option = 0;
-    int area = -1, perimeter = -1;
-    string  vertexShader = "", fragmentShader = "";
-
-    //Specifying the expected options
-    //The two options l and b expect numbers as argument
-    while ((option = getopt(argc, argv,"f:v:")) != -1) {
-        switch (option) {
-             case 'f' : fragmentShader = optarg;
-                 break;
-             case 'v' : vertexShader = optarg;
-                 break;
-             default: printf("Usage: %s –f beispiel_fragmentshader.glsl –v beispiel_vertexshader.glsl\n", argv[0]);
-                 exit(EXIT_FAILURE);
-        }
-    }
-    if (vertexShader == "" && fragmentShader == "") {
-        printf("Usage: %s –f beispiel_fragmentshader.glsl –v beispiel_vertexshader.glsl\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    cout << "Current params: " << endl;
-    cout << "VertexShader: " << vertexShader << endl;
-    cout << "FragmentShader: " << fragmentShader << endl;
-
-	glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(g_WindowWidth, g_WindowHeight);
-    glutCreateWindow("Matrix Fractal");
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    gluOrtho2D(0.0,0.0,(GLfloat) 500, (GLfloat) 500);
-
-    //glutDisplayFunc(draw);
-    //glutReshapeFunc(reshape);
-
-    //initShader("fsFractal.glsl");
-
-    //glutMainLoop();
-    //GLenum err = glewInit();
-    //
-    // initialize the glut system and create a window
-    g_Model.load(g_ModelToLoad, "ToonVertexShader.glsl", "ToonFragmentShader.glsl");
-
-
-    glutDisplayFunc(DrawScene);
-    glutMouseFunc(MouseCallback);
-    glutKeyboardFunc(KeyboardCallback);
-    glutMotionFunc(MouseMoveCallback);
-
-
-	ShaderProgram sp;
-
-	bool hasLoaded = sp.load(vertexShader.c_str(), fragmentShader.c_str());
-
-	if(hasLoaded)
-		sp.compile(nullptr);
-
-	glutMainLoop();
-	return 0;
-}
-
-void MouseCallback(int Button, int State, int x, int y)
-{
-    g_MouseButton = Button;
-    g_MouseState = State;
-    g_Camera.mouseInput(x,y,Button,State);
-}
-
-void MouseMoveCallback( int x, int y)
-{
-    g_Camera.mouseInput(x,y,g_MouseButton,g_MouseState);
-}
-
-void KeyboardCallback( unsigned char key, int x, int y)
-{
-    if( key == 'l')
-        g_RenderMode=RENDERMODE_LINES;
-    else if( key == 't')
-        g_RenderMode=RENDERMODE_TRIANGLES;
-
-}
-
-
-void DrawScene()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glLoadIdentity();
-    g_Camera.apply();
-
-
-    GLfloat lpos[4];
-    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
-    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
-
-    if(g_RenderMode == RENDERMODE_LINES)
-    {
-        glDisable(GL_LIGHTING);
-        g_Model.drawLines();
-        glEnable(GL_LIGHTING);
-    }
-    else if(g_RenderMode== RENDERMODE_TRIANGLES)
-        g_Model.drawTriangles();
-
-    glutSwapBuffers();
-    glutPostRedisplay();
-
-}*/

@@ -31,4 +31,9 @@ inline float interpolateTo( float current, float target, float deltaTime, float 
 	return current + deltaMove;
 }
 
+inline float angleToRadian(float angle)
+{
+  return angle*M_PI/180;
+}
+
 #endif // GLOBAL_H
