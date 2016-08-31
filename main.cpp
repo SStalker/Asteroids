@@ -206,17 +206,19 @@ void MouseMoveCallback( int x, int y)
 
     // Set the cursor back to center;
     glutWarpPointer( centerX, centerY );
-
-//    sp.steer(g_forward, g_right);
-    sp.MoveUpInput(g_forward);
-    sp.MoveRightInput(-1*g_right);
 }
 
 void KeyboardCallback( unsigned char key, int x, int y)
 {
-	int mod = glutGetModifiers();
-    if( key == 'w')
-        sp.ThrustInput(1.f);
+    int mod = glutGetModifiers();
+    switch (key) {
+    case 'w': sp.ThrustInput(1.f);
+        break;
+    case 's': sp.ThrustInput(-1.f);
+        break;
+    default:
+        break;
+    }
 }
 
 
