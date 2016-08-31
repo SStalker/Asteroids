@@ -26,14 +26,18 @@ Spaceship::Spaceship()
 
 void Spaceship::update(float deltaTime)
 {
-
-    pos.Z = CurrentForwardSpeed * deltaTime;
-    pos.Y = CurrentPitchSpeed * deltaTime;
-    pos.X = CurrentYawSpeed * deltaTime;
-
+    //Rotate ship
     m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
-    m_position.translation(0.f,0.f, pos.Z);
 
+    //Calculate new position
+    pos.X = CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
+    pos.Y = CurrentForwardSpeed * deltaTime * m_rotation.forward().Y;
+    pos.Z = CurrentForwardSpeed * deltaTime * m_rotation.forward().Z;
+
+    //Set new position
+    m_position.translation(pos.X, pos.Y, pos.Z);
+
+    //Combine matrices for the camera
     Matrix combined = m_position * m_rotation;
 
     g_Camera.setPosition(combined.forward()*-6.f + combined.up()*3.f + combined.translation());
