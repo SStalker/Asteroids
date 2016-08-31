@@ -1,0 +1,12 @@
+# Blender MTL File: 'asteroid sc0001.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 333.333333
+Ka 1.000000 1.000000 1.000000
+Kd 0.475298 0.492626 0.482229
+Ks 0.586927 0.586927 0.586927
+Ke 0.076048 0.078820 0.077157
+Ni 1.000000
+d 1.000000
+illum 2
