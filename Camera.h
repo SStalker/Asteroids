@@ -12,7 +12,6 @@
 #include <iostream>
 
 #include "Vector.h"
-#include "Quaternion.h"
 
 extern const unsigned int g_WindowWidth;
 extern const unsigned int g_WindowHeight;
@@ -26,13 +25,10 @@ public:
     Vector getPosition();
     Vector getTarget();
     Vector getUp();
-    Quaternion getView();
 
     void setPosition( const Vector& Pos);
     void setTarget( const Vector& Target);
     void setUp( const Vector& Up);
-
-    void rotate(double angle, double x, double y, double z);
 
     void mouseInput( int x, int y, int Button, int State);
 
@@ -54,7 +50,6 @@ protected:
     int m_LastMouseX;
     int m_LastMouseY;
 
-    Quaternion View;
 };
 
 

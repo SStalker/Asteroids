@@ -14,7 +14,6 @@ all:
 	Camera.cpp \
 	Rgbimage.cpp \
 	Spaceship.cpp \
-	Quaternion.cpp \
 	GameObject.cpp \
 	Asteroid.cpp \
 	Projectile.cpp \

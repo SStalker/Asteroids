@@ -45,11 +45,6 @@ Vector Camera::getUp()
     return m_Up;
 }
 
-Quaternion Camera::getView()
-{
-	return View;
-}
-
 void Camera::setPosition( const Vector& Pos)
 {
     m_Position = Pos;
@@ -65,28 +60,6 @@ void Camera::setTarget( const Vector& Target)
 void Camera::setUp( const Vector& Up)
 {
     m_Up = Up;
-}
-
-void Camera::rotate(double angle, double x, double y, double z)
-{
-	Quaternion t,v,r;
-
-	t.x = x*sin(angle/2);
-	t.y = y*sin(angle/2);
-	t.z = z*sin(angle/2);
-	t.w = cos(angle/2);
-
-	v.x = View.x;
-	v.y = View.y;
-	v.z = View.z;
-	v.w = 0;
-
-	//Quaternion tmp = t.multiply( );
-	r = Quaternion::multiply( Quaternion::multiply(t,v), t.conjugate() );
-
-	View.x = r.x;
-	View.y = r.y;
-	View.z = r.z;
 }
 
 void Camera::mouseInput( int x, int y, int Button, int State)
