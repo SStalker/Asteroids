@@ -9,6 +9,7 @@ private:
 
 public:
   Planet();
+  Planet(const Vector& pos, string name);
 };
 
 #endif

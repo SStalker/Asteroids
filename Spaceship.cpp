@@ -12,27 +12,15 @@ Spaceship::Spaceship()
     Yaw = 0.f;
 }
 
-/*bool Spaceship::load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos)
-{
-	bool success = false;
-    //Load Model to variable
-    cout << model << " " << VertexShader << " " << FragmentShader << endl;
-    success = load(model, VertexShader, FragmentShader);
-
-    pos = startPos;
-
-    return success;
-}*/
-
 void Spaceship::update(float deltaTime)
 {
     //Rotate ship
     m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
 
     //Calculate new position
-    pos.X = CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
-    pos.Y = CurrentForwardSpeed * deltaTime * m_rotation.forward().Y;
-    pos.Z = CurrentForwardSpeed * deltaTime * m_rotation.forward().Z;
+    pos.X += CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
+    pos.Y += CurrentForwardSpeed * deltaTime * m_rotation.forward().Y;
+    pos.Z += CurrentForwardSpeed * deltaTime * m_rotation.forward().Z;
 
     //Set new position
     m_position.translation(pos.X, pos.Y, pos.Z);

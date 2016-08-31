@@ -17,8 +17,8 @@
 #include "Model.h"
 #include "Texture.h"
 #include "global.h"
-
 #include "Spaceship.h"
+#include "Game.h"
 
 class Debug{
 public:
@@ -105,7 +105,6 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutPassiveMotionFunc(MouseMoveCallback);
 
-
     //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
     if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
         cout << "Could not load model";
@@ -113,6 +112,8 @@ int main(int argc, char * argv[])
     }
 
 		sp.setPos(Vector(0.f,0.f,0.f));
+		Game *game = Game::getInstance();
+		game->init();
 
     glutMainLoop();
 }
@@ -157,8 +158,8 @@ void SetupDefaultGLSettings()
 
 void DrawGroundGrid()
 {
-    const float GridSize=1000.0f;
-    const unsigned int GridSegments=2000;
+    const float GridSize=10.0f;
+    const unsigned int GridSegments=10;
     const float GridStep=GridSize/(float)GridSegments;
     const float GridOrigin=-GridSize*0.5f;
 
@@ -237,10 +238,28 @@ void DrawScene()
     DrawGroundGrid();
     sp.draw();
 
+		// Draw every asteroid
+		for(auto& asteroid : *Game::getInstance()->getAsteroidList())
+		{
+			asteroid->update(deltaTime);
+			asteroid->draw();
+			//Debug::Drawmatrix(asteroid->getPosition());
+			//cout << asteroid->getPosition().translation() << endl;
+		}
+
+		// Draw the earth
+		for(auto& planet : *Game::getInstance()->getPlanetList())
+		{
+			planet->update(deltaTime);
+			planet->draw();
+			//Debug::Drawmatrix(planet->getPosition());
+			//cout << "Name: " << planet->getName() << endl;
+		}
+
     Matrix cPos = sp.getPosition();
     Matrix cRot = sp.getRotation();
     Matrix combined = cPos*cRot;
-        Debug::Drawmatrix(combined);
+
 
     glutSwapBuffers();
     glutPostRedisplay();

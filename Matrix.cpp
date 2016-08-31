@@ -173,9 +173,9 @@ Matrix& Matrix::multiply(const Matrix& M )
 }
 Matrix& Matrix::translation(float X, float Y, float Z )
 {
-    m00= 1;	m01= 0;	m02= 0;	m03+= X;
-    m10= 0;	m11= 1;	m12= 0;	m13+= Y;
-    m20= 0;	m21= 0;	m22= 1;	m23+= Z;
+    m00= 1;	m01= 0;	m02= 0;	m03= X;
+    m10= 0;	m11= 1;	m12= 0;	m13= Y;
+    m20= 0;	m21= 0;	m22= 1;	m23= Z;
     m30= 0;	m31= 0;	m32= 0;	m33= 1;
     return *this;
 }

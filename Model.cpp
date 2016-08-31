@@ -115,8 +115,10 @@ bool Model::load( const char* Filename, bool FitSize)
             {
                 //cout << "Beschreibung eines Texturkoordinatenpunktes: " << line.substr(3) << endl;
                 vector<string> list = split(line.substr(2), ' ');
-
-                my_texture_points.push_back( new Vector( stof(list.at(0)), stof(list.at(1)), stof(list.at(2)) ) );
+                if(list.size() == 2)
+                  my_texture_points.push_back( new Vector( stof(list.at(0)), stof(list.at(1)), 0.f ) );
+                else
+                  my_texture_points.push_back( new Vector( stof(list.at(0)), stof(list.at(1)), stof(list.at(2)) ) );
 
             }
             else if(line.substr(0,3) == "vn ")

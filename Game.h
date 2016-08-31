@@ -7,6 +7,7 @@
 #include "Planet.h"
 
 #include <vector>
+#include <random>
 
 class Game
 {

@@ -9,6 +9,8 @@ private:
 
 public:
   Asteroid();
+  Asteroid(const Vector& startPos);
+  Asteroid(const Vector& startPos, const Vector& startRot);
 };
 
 #endif
