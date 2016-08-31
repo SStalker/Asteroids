@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "Vector.h"
+#include "Quaternion.h"
 
 extern const unsigned int g_WindowWidth;
 extern const unsigned int g_WindowHeight;
@@ -21,17 +22,20 @@ class Camera
 public:
     Camera();
     Camera(Vector& Pos, Vector& Target, Vector& Up);
-    
+
     Vector getPosition();
     Vector getTarget();
     Vector getUp();
-    
+    Quaternion getView();
+
     void setPosition( const Vector& Pos);
     void setTarget( const Vector& Target);
     void setUp( const Vector& Up);
 
+    void rotate(double angle, double x, double y, double z);
+
     void mouseInput( int x, int y, int Button, int State);
-    
+
     void apply();
 protected:
     void pan( float dx, float dy);
@@ -39,8 +43,8 @@ protected:
     void rotate( float x, float y );
     Vector getVSpherePos( float x, float y);
     Vector rotateAxisAngle( Vector v, Vector n, float a);
-    
-    
+
+
     Vector m_Position;
     Vector m_Target;
     Vector m_Up;
@@ -49,6 +53,8 @@ protected:
     Vector m_Rotation;
     int m_LastMouseX;
     int m_LastMouseY;
+
+    Quaternion View;
 };
 
 

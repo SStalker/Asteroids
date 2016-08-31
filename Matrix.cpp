@@ -14,7 +14,7 @@
 
 Matrix::Matrix()
 {
-    
+
 }
 
 Matrix::Matrix( float _00, float _01, float _02, float _03,
@@ -61,7 +61,7 @@ bool Matrix::operator==(const Matrix& M)
     fabs(m10-M.m10)<=Epsilon && fabs(m11-M.m11)<=Epsilon && fabs(m12-M.m12)<=Epsilon && fabs(m13-M.m13)<=Epsilon &&
     fabs(m20-M.m20)<=Epsilon && fabs(m21-M.m21)<=Epsilon && fabs(m22-M.m22)<=Epsilon && fabs(m23-M.m23)<=Epsilon &&
     fabs(m30-M.m30)<=Epsilon && fabs(m31-M.m31)<=Epsilon && fabs(m32-M.m32)<=Epsilon && fabs(m33-M.m33)<=Epsilon;
-    
+
     return false;
 }
 
@@ -72,7 +72,7 @@ Vector Matrix::transformVec4x4( const Vector& v) const
     float Z = m20*v.X + m21*v.Y + m22*v.Z + m23;
     float W = m30*v.X + m31*v.Y + m32*v.Z + m33;
     return Vector( X/W, Y/W, Z/W);
-    
+
 }
 Vector Matrix::transformVec3x3( const Vector& v) const
 {
@@ -147,7 +147,7 @@ void Matrix::right( const Vector& v)
 Matrix& Matrix::multiply(const Matrix& M )
 {
     const Matrix& A = *this;
-    
+
     Matrix Tmp(
         A.m00 * M.m00 + A.m01 * M.m10  + A.m02 * M.m20 + A.m03 * M.m30,
         A.m00 * M.m01 + A.m01 * M.m11  + A.m02 * M.m21 + A.m03 * M.m31,
@@ -173,9 +173,9 @@ Matrix& Matrix::multiply(const Matrix& M )
 }
 Matrix& Matrix::translation(float X, float Y, float Z )
 {
-    m00= 1;	m01= 0;	m02= 0;	m03= X;
-    m10= 0;	m11= 1;	m12= 0;	m13= Y;
-    m20= 0;	m21= 0;	m22= 1;	m23= Z;
+    m00= 1;	m01= 0;	m02= 0;	m03+= X;
+    m10= 0;	m11= 1;	m12= 0;	m13+= Y;
+    m20= 0;	m21= 0;	m22= 1;	m23+= Z;
     m30= 0;	m31= 0;	m32= 0;	m33= 1;
     return *this;
 }
@@ -189,11 +189,11 @@ Matrix& Matrix::rotationX(float Angle )
     m10= 0;					m13= 0;
     m20= 0;					m23= 0;
     m30= 0;	m31= 0;	m32= 0;	m33= 1;
-    
+
     m11 = m22 = cos(Angle);
     m21 = sin(Angle);
     m12 = -m21;
-    
+
     return *this;
 }
 Matrix& Matrix::rotationY(float Angle )
@@ -202,11 +202,11 @@ Matrix& Matrix::rotationY(float Angle )
     m10= 0;	m11= 1;	m12= 0;	m13= 0;
             m21= 0;         m23= 0;
     m30= 0;	m31= 0;	m32= 0;	m33= 1;
-    
+
     m00 = m22 = cos(Angle);
     m02 = sin(Angle);
     m20 = -m02;
-    
+
     return *this;
 }
 Matrix& Matrix::rotationZ(float Angle )
@@ -215,11 +215,11 @@ Matrix& Matrix::rotationZ(float Angle )
                     m12= 0;	m13= 0;
     m20= 0;	m21= 0;	m22= 1;	m23= 0;
     m30= 0;	m31= 0;	m32= 0;	m33= 1;
-    
+
     m00 = m11 = cos(Angle);
     m10= sin(Angle);
     m01= -m10;
-    
+
     return *this;
 }
 Matrix& Matrix::rotationYawPitchRoll( float Yaw, float Pitch, float Roll )
@@ -227,11 +227,11 @@ Matrix& Matrix::rotationYawPitchRoll( float Yaw, float Pitch, float Roll )
     float cosx = cos(Pitch);
     float cosy = cos(Yaw);
     float cosz = cos(Roll);
-    
+
     float sinx = sin(Pitch);
     float siny = sin(Yaw);
     float sinz = sin(Roll);
-    
+
     m00 = cosz*cosy + sinz*sinx*siny;
     m10 = sinz*cosx;
     m20 = -cosz*siny + sinz*sinx*cosy;
@@ -241,15 +241,15 @@ Matrix& Matrix::rotationYawPitchRoll( float Yaw, float Pitch, float Roll )
     m11 = cosz*cosx;
     m21 = sinz*siny + cosz*sinx*cosy;
     m31 = 0;
-    
+
     m02 = cosx*siny;
     m12 = -sinx;
     m22 = cosx*cosy;
     m32 = 0;
-    
+
     m03 = m13 = m23 = 0;
     m33 = 1;
-    
+
     return *this;
 }
 Matrix& Matrix::rotationYawPitchRoll(const Vector& Angles )
@@ -264,27 +264,27 @@ Matrix& Matrix::rotationAxis(const Vector& Axis, float Angle)
     const float OMCo = 1 - Co;
     Vector Ax = Axis;
     Ax.normalize();
-    
+
     m00= (Ax.X * Ax.X) * OMCo + Co;
     m01= (Ax.X * Ax.Y) * OMCo - (Ax.Z * Si);
     m02= (Ax.X * Ax.Z) * OMCo + (Ax.Y * Si);
     m03= 0;
-    
+
     m10= (Ax.Y * Ax.X) * OMCo + (Ax.Z * Si);
     m11= (Ax.Y * Ax.Y) * OMCo + Co;
     m12= (Ax.Y * Ax.Z) * OMCo - (Ax.X * Si);
     m13= 0;
-    
+
     m20= (Ax.Z * Ax.X) * OMCo - (Ax.Y * Si);
     m21= (Ax.Z * Ax.Y) * OMCo + (Ax.X * Si);
     m22= (Ax.Z * Ax.Z) * OMCo + Co;
     m23= 0;
-    
+
     m30= 0;
     m31= 0;
     m32= 0;
     m33= 1;
-    
+
     return *this;
 }
 Matrix& Matrix::scale(float ScaleX, float ScaleY, float ScaleZ )
@@ -293,7 +293,7 @@ Matrix& Matrix::scale(float ScaleX, float ScaleY, float ScaleZ )
     m10= 0;			m11= ScaleY;	m12= 0;			m13= 0;
     m20= 0;			m21= 0;			m22= ScaleZ;	m23= 0;
     m30= 0;			m31= 0;			m32= 0;			m33= 1;
-    
+
     return *this;
 }
 Matrix& Matrix::scale(const Vector& Scalings )
@@ -401,16 +401,16 @@ Matrix& Matrix::lookAt(const Vector& Target, const Vector& Up, const Vector& Pos
 Matrix& Matrix::perspective(float Fovy, float AspectRatio, float NearPlane, float FarPlane )
 {
     assert(NearPlane<FarPlane);
-    
+
     const float f = 1.0f/tan(Fovy*0.5f);
     const float NearMinusFar = NearPlane-FarPlane;
-    
+
     m01 = m02 = m03 = 0;
     m10 = m12 = m13 = 0;
     m20 = m21 = 0;
     m30 = m31 = m33 = 0;
     m32 = -1;
-    
+
     m00 = f / AspectRatio;
     m11 = f;
     m22 = (FarPlane+NearPlane)/NearMinusFar;
@@ -432,7 +432,3 @@ float Matrix::determinat()
     m01 * (m10 * m22 - m12 * m20) +
     m02 * (m10 * m21 - m11 * m20);
 }
-
-
-
-
