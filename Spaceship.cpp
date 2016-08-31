@@ -62,7 +62,7 @@ void Spaceship::steer(float forwardBackward, float leftRight)
 
     float vorzeichen = 1.f;
 
-    Pitch += (-1.f) * forwardBackward * deltaTime * TurnSpeed;// * CurrentPitchSpeed;//?
+    Pitch += 3.5*(-1.f) * forwardBackward * deltaTime * TurnSpeed;// * CurrentPitchSpeed;//?
 
     if(Pitch > 2 * M_PI){
         Pitch-=2 * M_PI;
@@ -75,7 +75,7 @@ void Spaceship::steer(float forwardBackward, float leftRight)
         vorzeichen = -1.f;
     }
 
-    Yaw += (-1.f) * leftRight * deltaTime * TurnSpeed;
+    Yaw += 3.5*(-1.f) * leftRight * deltaTime * TurnSpeed;
 
     if(Yaw > 2 * M_PI){
         Yaw -= 2 * M_PI;
