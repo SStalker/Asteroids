@@ -54,7 +54,26 @@ void Spaceship::draw()
 void Spaceship::steer(float forwardBackward, float leftRight)
 {
     Pitch += (-1.f) * forwardBackward * deltaTime * 0.125f; // * CurrentPitchSpeed?
+
+    if(Pitch > 2 * M_PI)
+        Pitch-=2 * M_PI;
+    else if(Pitch < 0.f)
+        Pitch += 2 * M_PI;
+
+    if(Pitch > M_PI_2 && Pitch < (3 * M_PI_2) )
+        leftRight *= (-1.f);
+
+
     Yaw += (-1.f) * leftRight * deltaTime * 0.125f;
+
+    if(Yaw > 2 * M_PI)
+        Yaw -= 2 * M_PI;
+    else if(Yaw < 0.f)
+        Yaw += 2 * M_PI;
+
+    cout << "Pitch: " << Pitch << endl;
+    cout << "Yaw: " << Yaw << endl;
+
 }
 
 void Spaceship::ThrustInput(float Val)

@@ -1,6 +1,7 @@
 #ifndef SPACESHIP_H
 #define SPACESHIP_H
 
+#include <cmath>
 #include "Matrix.h"
 #include "Vector.h"
 #include "global.h"

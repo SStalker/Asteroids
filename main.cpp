@@ -231,20 +231,15 @@ void DrawScene()
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
-
     sp.setDeltaTime(deltaTime);
     sp.update(deltaTime);
+
+    DrawGroundGrid();
+    sp.draw();
 
     Matrix cPos = sp.getPosition();
     Matrix cRot = sp.getRotation();
     Matrix combined = cPos*cRot;
-
-//    g_Camera.setPosition(combined.forward()*-3.f + combined.up()*4.f + combined.translation());
-//    g_Camera.setTarget(combined.translation() + combined.forward()*4.f);
-//    g_Camera.apply();
-
-    DrawGroundGrid();
-    sp.draw();
         Debug::Drawmatrix(combined);
 
     glutSwapBuffers();
