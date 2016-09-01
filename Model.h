@@ -64,8 +64,23 @@ class BoundingBox
 public:
     BoundingBox();
     BoundingBox( const Vector& min, const Vector& max);
+    void calculateAllPoints();
     Vector Min;
+//    Vector BaseMin;
     Vector Max;
+//    Vector BaseMax;
+    Vector allPoints[8];
+    Vector allPointsBase[8];
+};
+
+class BoundingSphere
+{
+public:
+    BoundingSphere();
+    BoundingSphere(const Vector &center, const float &radius);
+    Vector Center;
+    Vector BaseCenter;
+    float Radius;
 };
 
 class Model
@@ -89,8 +104,10 @@ public:
     void createFace(string line);
     void createVertices();
     void calcBounding(const Vector& a, const Vector& b, const Vector& c);
+    void calcSphere();
     void scale();
     void convertToFloat(vector<float>& color, const vector<string> &splitted);
+    void drawSphere();
 
 protected:
     Material* m_pMaterials;
@@ -98,6 +115,7 @@ protected:
     Vertex* m_pVertices;
     unsigned int m_VertexCount;
     BoundingBox m_Box;
+    BoundingSphere m_Sphere;
 
     Usemtl* m_pMaterialsAt;
     unsigned int m_MaterialAtCount;

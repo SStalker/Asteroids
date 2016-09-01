@@ -58,6 +58,7 @@ const Vector g_LightPos = Vector( 0,8,0);
 float oldTime = 0;
 
 
+Game *game = Game::getInstance();
 Camera g_Camera;
 Model g_Model;
 Spaceship sp;
@@ -113,8 +114,8 @@ int main(int argc, char * argv[])
         exit(6);
     }
 
-		sp.setPos(Vector(0.f,0.f,0.f));
-		Game *game = Game::getInstance();
+		sp.setPos(Vector(0.f,0.f,-20.f));
+
 		game->init();
 
     glutMainLoop();
@@ -203,9 +204,9 @@ void mouseMove(int x, int y)
 
 void MouseCallback(int Button, int State, int x, int y)
 {
-    g_MouseButton = Button;
-    g_MouseState = State;
-    g_Camera.mouseInput(x,y,Button,State);
+    if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
+        sp.fire();
+    }
 
     cout << "click" << endl;
 
@@ -253,28 +254,42 @@ void DrawScene()
     DrawGroundGrid();
     sp.draw();
 
-		// Draw every asteroid
-		for(auto& asteroid : *Game::getInstance()->getAsteroidList())
+    // Draw every asteroid
+    for(auto& asteroid : *Game::getInstance()->getAsteroidList())
+    {
+        asteroid->update(deltaTime);
+        asteroid->draw();
+//        asteroid->drawSphere();
+//        asteroid->drawBounding();
+        //Debug::Drawmatrix(asteroid->getPosition());
+        //cout << asteroid->getPosition().translation() << endl;
+    }
+
+    // Draw the earth
+    for(auto& planet : *Game::getInstance()->getPlanetList())
+    {
+        planet->update(deltaTime);
+        planet->draw();
+//        planet->drawSphere();
+//        planet->drawBounding();
+        //Debug::Drawmatrix(planet->getPosition());
+        //cout << "Name: " << planet->getName() << endl;
+    }
+
+		// Draw the projectiles
+		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+
+		for(int i = 0; i < plist->size(); i++)
 		{
-			asteroid->update(deltaTime);
-			asteroid->draw();
-			//Debug::Drawmatrix(asteroid->getPosition());
-			//cout << asteroid->getPosition().translation() << endl;
+				if((*plist)[i]->isDead())
+				{
+					delete (*plist)[i];
+					plist->erase(plist->begin()+i);
+				}else{
+					(*plist)[i]->update(deltaTime);
+					(*plist)[i]->draw();
+				}
 		}
-
-		// Draw the earth
-		for(auto& planet : *Game::getInstance()->getPlanetList())
-		{
-			planet->update(deltaTime);
-			planet->draw();
-			//Debug::Drawmatrix(planet->getPosition());
-			//cout << "Name: " << planet->getName() << endl;
-		}
-
-    Matrix cPos = sp.getPosition();
-    Matrix cRot = sp.getRotation();
-    Matrix combined = cPos*cRot;
-
 
     glutSwapBuffers();
     glutPostRedisplay();
