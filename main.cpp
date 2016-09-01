@@ -72,8 +72,9 @@ float g_right = 0;
 void SetupDefaultGLSettings();
 void DrawScene();
 void MouseCallback(int Button, int State, int x, int y);
-void MouseMoveCallback(int x, int y);
+void MousePassiveMoveCallback(int x, int y);
 void KeyboardCallback( unsigned char key, int x, int y);
+void MouseMoveCallback(int x, int y);
 
 enum RenderMode
 {
@@ -103,7 +104,8 @@ int main(int argc, char * argv[])
     glutDisplayFunc(DrawScene);
     glutMouseFunc(MouseCallback);
     glutKeyboardFunc(KeyboardCallback);
-    glutPassiveMotionFunc(MouseMoveCallback);
+    glutPassiveMotionFunc(MousePassiveMoveCallback);
+    glutMotionFunc(MouseMoveCallback);
 
     //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
     if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
@@ -181,17 +183,8 @@ void DrawGroundGrid()
 
 }
 
-void MouseCallback(int Button, int State, int x, int y)
+void mouseMove(int x, int y)
 {
-    g_MouseButton = Button;
-    g_MouseState = State;
-    g_Camera.mouseInput(x,y,Button,State);
-
-}
-
-void MouseMoveCallback( int x, int y)
-{
-
     int mouseX = x-centerX;
     int mouseY = y-centerY;
 
@@ -206,6 +199,26 @@ void MouseMoveCallback( int x, int y)
 
     // Set the cursor back to center;
     glutWarpPointer( centerX, centerY );
+}
+
+void MouseCallback(int Button, int State, int x, int y)
+{
+    g_MouseButton = Button;
+    g_MouseState = State;
+    g_Camera.mouseInput(x,y,Button,State);
+
+    cout << "click" << endl;
+
+}
+
+void MousePassiveMoveCallback( int x, int y)
+{
+    mouseMove(x,y);
+}
+
+void MouseMoveCallback(int x, int y)
+{
+    mouseMove(x,y);
 }
 
 void KeyboardCallback( unsigned char key, int x, int y)
