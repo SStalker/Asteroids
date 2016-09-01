@@ -1,4 +1,5 @@
 #include "Spaceship.h"
+#include "Game.h"
 
 Spaceship::Spaceship()
 {
@@ -18,7 +19,7 @@ Spaceship::Spaceship()
 
 void Spaceship::update(float deltaTime)
 {
-
+    alive();
     //Rotate ship
     m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
 
@@ -114,4 +115,19 @@ void Spaceship::ThrustInput(float Val)
 void Spaceship::setDeltaTime(float deltaTime)
 {
 	this->deltaTime = deltaTime;
+}
+
+vector<Projectile*> Spaceship::getProjectiles() const
+{
+  return this->projectiles;
+}
+
+void Spaceship::fire()
+{
+  Matrix combined = m_position * m_rotation;
+
+  Projectile *p = new Projectile(pos, combined.forward(), 0.5);
+  p->setName("Projectile" + to_string(projectiles.size()));
+
+  Game::getInstance()->getProjectileList()->push_back(p);
 }

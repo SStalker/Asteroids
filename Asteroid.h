@@ -2,6 +2,7 @@
 #define ASTEROID_H
 
 #include "GameObject.h"
+#define ASTEROID_SPEED 0.1
 
 class Asteroid : public GameObject
 {
@@ -11,6 +12,8 @@ public:
   Asteroid();
   Asteroid(const Vector& startPos);
   Asteroid(const Vector& startPos, const Vector& startRot);
+
+  void update(float deltaTime);
 };
 
 #endif

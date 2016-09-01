@@ -6,6 +6,7 @@
 #include "Vector.h"
 #include "global.h"
 #include "GameObject.h"
+#include "Projectile.h"
 
 class Spaceship : public GameObject{
 
@@ -22,14 +23,18 @@ public:
 
 	void setDeltaTime(float deltaTime);
 
+	void fire();
+
+	vector<Projectile*> getProjectiles() const;
+
 private:
 
 	/** Dont if good idea.. save current deltaTime here */
 	float deltaTime;
 
-    /** Distance from camera to ship */
-    float camShipBaseDistFoward;
-    float camShipBaseDistUp;
+  /** Distance from camera to ship */
+  float camShipBaseDistFoward;
+  float camShipBaseDistUp;
 
 	/** How quickly forward speed changes */
 	float Acceleration;
@@ -58,14 +63,16 @@ private:
 	/** Current roll speed */
 	float CurrentRollSpeed;
 
-    /** Pitch angle*/
-    float Pitch;
+  /** Pitch angle*/
+  float Pitch;
 
-    /** Yaw angle*/
-    float Yaw;
+  /** Yaw angle*/
+  float Yaw;
 
-    /** Roll angle*/
-    float Roll;
+  /** Roll angle*/
+  float Roll;
+
+	vector<Projectile*> projectiles;
 };
 
 #endif

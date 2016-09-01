@@ -58,6 +58,7 @@ const Vector g_LightPos = Vector( 0,8,0);
 float oldTime = 0;
 
 
+Game *game = Game::getInstance();
 Camera g_Camera;
 Model g_Model;
 Spaceship sp;
@@ -111,8 +112,8 @@ int main(int argc, char * argv[])
         exit(6);
     }
 
-		sp.setPos(Vector(0.f,0.f,0.f));
-		Game *game = Game::getInstance();
+		sp.setPos(Vector(0.f,0.f,-20.f));
+
 		game->init();
 
     glutMainLoop();
@@ -183,9 +184,9 @@ void DrawGroundGrid()
 
 void MouseCallback(int Button, int State, int x, int y)
 {
-    g_MouseButton = Button;
-    g_MouseState = State;
-    g_Camera.mouseInput(x,y,Button,State);
+	if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
+    sp.fire();
+  }
 
 }
 
@@ -262,6 +263,20 @@ void DrawScene()
         //cout << "Name: " << planet->getName() << endl;
     }
 
+		// Draw the projectiles
+		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+
+		for(int i = 0; i < plist->size(); i++)
+		{
+				if((*plist)[i]->isDead())
+				{
+					delete (*plist)[i];
+					plist->erase(plist->begin()+i);
+				}else{
+					(*plist)[i]->update(deltaTime);
+					(*plist)[i]->draw();
+				}
+		}
 
     glutSwapBuffers();
     glutPostRedisplay();
