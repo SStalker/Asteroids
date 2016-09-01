@@ -245,8 +245,8 @@ void DrawScene()
     {
         asteroid->update(deltaTime);
         asteroid->draw();
-//            asteroid->drawSphere();
-//            asteroid->drawBounding();
+//        asteroid->drawSphere();
+//        asteroid->drawBounding();
         //Debug::Drawmatrix(asteroid->getPosition());
         //cout << asteroid->getPosition().translation() << endl;
     }

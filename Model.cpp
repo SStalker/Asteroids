@@ -60,8 +60,8 @@ void BoundingBox::calculateAllPoints()
     allPoints[6] = allPointsBase[6] = Vector(Min.X, Max.Y, Max.Z); //7
     allPoints[7] = allPointsBase[7] = Vector(Max.X, Max.Y, Max.Z); //8
 
-    for(unsigned int i = 0; i < 8; i++)
-        cout << allPoints[i];
+//    for(unsigned int i = 0; i < 8; i++)
+//        cout << allPoints[i];
 
 }
 
@@ -181,16 +181,16 @@ bool Model::load( const char* Filename, bool FitSize)
     {
         return false;
     }
+
     //eingelesene werte in m_pVertices schreiben und boundingbox ermitteln
     createVertices();
 
+    calcSphere();
     // scale
     if(FitSize){
         scale();
     }
-    //Set base values
-//    m_Box.BaseMax = m_Box.Max;
-//    m_Box.BaseMin = m_Box.Min;
+
 
     //Calc all points of bbox
     m_Box.calculateAllPoints();
@@ -503,8 +503,7 @@ void Model::drawTriangles() const
         mtlNumber++;
         start = nextMaterial;
     }
-    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //1
-    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //2
+
     // disable states in reverse order
     glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_VERTEX_ARRAY);
@@ -520,41 +519,41 @@ void Model::drawBounding() const
     CheckGLErrors();
     glBegin(GL_LINES);
 
-    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //1
-    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //2
+    glVertex3f(m_Box.allPoints[0].X,m_Box.allPoints[0].Y,m_Box.allPoints[0].Z); //1
+    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //2
 
-    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //2
-    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //4
+    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //2
+    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //4
 
-    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //4
-    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //3
+    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //4
+    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //3
 
-    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //3
-    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //1
+    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //3
+    glVertex3f(m_Box.allPoints[0].X,m_Box.allPoints[0].Y,m_Box.allPoints[0].Z); //1
 
-    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //1
-    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //5
+    glVertex3f(m_Box.allPoints[0].X,m_Box.allPoints[0].Y,m_Box.allPoints[0].Z); //1
+    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //5
 
-    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //5
-    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //6
+    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //5
+    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //6
 
-    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //6
-    glVertex3f(m_Box.allPoints[8].X,m_Box.allPoints[8].Y,m_Box.allPoints[8].Z); //8
+    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //6
+    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //8
 
-    glVertex3f(m_Box.allPoints[8].X,m_Box.allPoints[8].Y,m_Box.allPoints[8].Z); //8
-    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //7
+    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //8
+    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //7
 
-    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //3
-    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //7
+    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //3
+    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //7
 
-    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //5
-    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //7
+    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //5
+    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //7
 
-    glVertex3f(m_Box.allPoints[4].X,m_Box.allPoints[4].Y,m_Box.allPoints[4].Z); //4
-    glVertex3f(m_Box.allPoints[8].X,m_Box.allPoints[8].Y,m_Box.allPoints[8].Z); //8
+    glVertex3f(m_Box.allPoints[3].X,m_Box.allPoints[3].Y,m_Box.allPoints[3].Z); //4
+    glVertex3f(m_Box.allPoints[7].X,m_Box.allPoints[7].Y,m_Box.allPoints[7].Z); //8
 
-    glVertex3f(m_Box.allPoints[2].X,m_Box.allPoints[2].Y,m_Box.allPoints[2].Z); //2
-    glVertex3f(m_Box.allPoints[6].X,m_Box.allPoints[6].Y,m_Box.allPoints[6].Z); //6
+    glVertex3f(m_Box.allPoints[1].X,m_Box.allPoints[1].Y,m_Box.allPoints[1].Z); //2
+    glVertex3f(m_Box.allPoints[5].X,m_Box.allPoints[5].Y,m_Box.allPoints[5].Z); //6
 
     glEnd();
 }
@@ -738,8 +737,6 @@ void Model::createVertices()
         m_pVertices[i*3+1].Normal =
         m_pVertices[i*3+2].Normal = normal;
     }
-
-    calcSphere();
 }
 
 void Model::calcBounding(const Vector &a, const Vector &b, const Vector &c)
@@ -777,12 +774,14 @@ void Model::calcBounding(const Vector &a, const Vector &b, const Vector &c)
 
 void Model::calcSphere(){
     m_Sphere.Center = m_Sphere.BaseCenter = (m_Box.Min + m_Box.Max) * 0.5f;
+
     float radius = 0.0f;
 
     for(unsigned int i = 0; i < m_VertexCount; i++){
         float distance = (m_Sphere.Center - m_pVertices[i].Position).length();
-        if(radius < distance)
+        if(radius < distance){
             radius = distance;
+        }
     }
 
     m_Sphere.Radius = radius;
@@ -816,6 +815,7 @@ void Model::scale()
     m_Box.Min = m_Box.Min * scale;
 
     m_Sphere.Radius *= scale;
+    m_Sphere.BaseCenter = m_Sphere.Center = m_Sphere.Center * scale;
 }
 
 void Model::convertToFloat(vector<float>& color, const vector<string>& splitted)
