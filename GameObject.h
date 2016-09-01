@@ -1,6 +1,8 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
+#include <ctime>
+
 #include "Model.h"
 #include "Vector.h"
 #include "Matrix.h"
@@ -14,12 +16,14 @@ private:
   float health;
   bool dead;
   string name;
+  long timeStamp;
 
 protected:
   Vector pos;
   Vector rot;
   Matrix m_position;
   Matrix m_rotation;
+  int lifeSpan;
 
 public:
   GameObject();
@@ -29,6 +33,9 @@ public:
   virtual void draw();
   virtual void update(float deltaTime);
   virtual void loadRessources(const char* obj, const char* vertexShader, const char* fragmentShader);
+
+  bool alive();
+  virtual void die();
 
   /* GETTER AND SETTER */
   float getHealth() const;
@@ -51,6 +58,9 @@ public:
 
   void setRot(const Vector& rot);
   const Vector getRot() const;
+
+  void setLifeSpan(int lifeSpan);
+  int getLifeSpan();
 };
 
 #endif

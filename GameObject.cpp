@@ -1,10 +1,15 @@
 #include "GameObject.h"
+#include "Game.h"
 
 GameObject::GameObject()
 {
   this->health = 100;
   this->dead = false;
   this->name = "GameObject";
+  this->lifeSpan = 0;
+
+  this->timeStamp = time(nullptr);
+  cout << timeStamp << endl;
 }
 
 GameObject::GameObject(const Vector& startPos) : GameObject()
@@ -28,6 +33,8 @@ void GameObject::draw()
 
 void GameObject::update(float deltaTime)
 {
+  alive();
+
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
 
@@ -41,6 +48,25 @@ void GameObject::loadRessources(const char* obj, const char* vertexShader, const
 
   if(!success)
     exit(4);
+}
+
+bool GameObject::alive()
+{
+  cout << name << " " << lifeSpan << endl;
+  if(this->lifeSpan == 0)
+    return true;
+
+  long delta = time(nullptr)-this->timeStamp;
+
+  if(delta >= this->lifeSpan){
+    die();
+    return false;
+  }
+}
+
+void GameObject::die()
+{
+  this->dead = true;
 }
 
 float GameObject::getHealth() const
@@ -111,4 +137,14 @@ void GameObject::setRot(const Vector& rot)
 const Vector GameObject::getRot() const
 {
   return rot;
+}
+
+void GameObject::setLifeSpan(int lifeSpan)
+{
+  this->lifeSpan = lifeSpan;
+}
+
+int GameObject::getLifeSpan()
+{
+  return lifeSpan;
 }
