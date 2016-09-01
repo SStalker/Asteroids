@@ -13,4 +13,5 @@ Planet::Planet(const Vector& pos, string name)
 
   if(!success)
     exit(4);
+
 }

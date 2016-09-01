@@ -9,6 +9,7 @@ Spaceship::Spaceship()
     MaxSpeed = 20.f; // 5000
     MinSpeed = 2.f; // 500
     CurrentForwardSpeed = 2.f; // 500
+    SpeedMult = 1.f;
     Pitch = 0.f;
     Yaw = 0.f;
     Roll = 0.f;
@@ -20,7 +21,7 @@ void Spaceship::update(float deltaTime)
 {
     alive();
     //Rotate ship
-    m_rotation.rotationYawPitchRoll(Yaw, Pitch, Roll);
+    m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
 
     //Calculate new position
     pos.X += CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
@@ -30,10 +31,13 @@ void Spaceship::update(float deltaTime)
     //Set new position
     m_position.translation(pos.X, pos.Y, pos.Z);
 
-    //Combine matrices for the camera
-    Matrix combined = m_position * m_rotation;
+    Matrix camRot = m_rotation;
+    camRot.rotationYawPitchRoll(Yaw, Pitch, -Roll);
 
-    g_Camera.setPosition(combined.forward() * (camShipBaseDistFoward - CurrentForwardSpeed/10.f ) + combined.up() * (camShipBaseDistUp + CurrentForwardSpeed/10.f) + combined.translation());
+    //Combine matrices for the camera
+    Matrix combined = m_position * camRot;
+
+    g_Camera.setPosition(combined.forward() * (camShipBaseDistFoward - SpeedMult ) + combined.up() * (camShipBaseDistUp + SpeedMult) + combined.translation());
     g_Camera.setTarget(combined.translation() + combined.forward()*8.f);
     g_Camera.setUp(combined.up());
     g_Camera.apply();
@@ -44,9 +48,9 @@ void Spaceship::update(float deltaTime)
     //Roll back
     if(Roll != 0.f){
         if(Roll > 0)
-            Roll -= deltaTime * 0.1f;
+            Roll -= deltaTime * 0.1f * SpeedMult;
         else if(Roll < 0)
-            Roll += deltaTime * 0.1f;
+            Roll += deltaTime * 0.1f * SpeedMult;
     }
 
 }
@@ -62,9 +66,9 @@ void Spaceship::draw()
 void Spaceship::steer(float forwardBackward, float leftRight)
 {
 
-    float vorzeichen = 1.f;
+    float additionSubtraction = 1.f;
 
-    Pitch += 3.5*(-1.f) * forwardBackward * deltaTime * TurnSpeed;// * CurrentPitchSpeed;//?
+    Pitch += (0.5f  + SpeedMult) * (-1.f) * forwardBackward * deltaTime * TurnSpeed;// * CurrentPitchSpeed;//?
 
     if(Pitch > 2 * M_PI){
         Pitch-=2 * M_PI;
@@ -74,10 +78,10 @@ void Spaceship::steer(float forwardBackward, float leftRight)
 
     if(Pitch > M_PI_2 && Pitch < (3 * M_PI_2) ){
         leftRight *= (-1.f);
-        vorzeichen = -1.f;
+        additionSubtraction = -1.f;
     }
 
-    Yaw += 3.5*(-1.f) * leftRight * deltaTime * TurnSpeed;
+    Yaw += (0.5f  + SpeedMult) * (-1.f) * leftRight * deltaTime * TurnSpeed;
 
     if(Yaw > 2 * M_PI){
         Yaw -= 2 * M_PI;
@@ -85,12 +89,12 @@ void Spaceship::steer(float forwardBackward, float leftRight)
         Yaw += 2 * M_PI;
     }
 
-    Roll += leftRight * deltaTime * TurnSpeed * vorzeichen;
+    Roll += leftRight * deltaTime * TurnSpeed * additionSubtraction;
 
-    if(Roll > M_PI_4){
-        Roll =  M_PI_4;
-    }else if(Roll < (-M_PI_4)){
-        Roll =  (-1.f) * M_PI_4;
+    if(Roll > M_PI_4/2){
+        Roll =  M_PI_4/2;
+    }else if(Roll < (-M_PI_4/2)){
+        Roll =  (-1.f) * M_PI_4/2;
     }
 }
 
@@ -105,6 +109,7 @@ void Spaceship::ThrustInput(float Val)
 
 	// Clamp between MinSpeed and MaxSpeed
     CurrentForwardSpeed = clamp(NewForwardSpeed, MinSpeed, MaxSpeed);
+    SpeedMult = CurrentForwardSpeed > 10 ? CurrentForwardSpeed/10 : 1.f;
 }
 
 void Spaceship::setDeltaTime(float deltaTime)
