@@ -23,16 +23,42 @@ void GameObject::draw()
   glPushMatrix();
       glMultMatrixf(m_position*m_rotation);
       drawTriangles();
+      drawBounding();
+//      drawSphere();
   glPopMatrix();
 }
 
 void GameObject::update(float deltaTime)
 {
-  //Set new position
-  m_position.translation(pos.X, pos.Y, pos.Z);
+    //Reset Bounding box
+//    m_Box.Min = m_Box.BaseMin;
+//    m_Box.Max = m_Box.BaseMax;
+//    m_Box.allPoints[0] = m_Box.allPointsBase[0];
+//    m_Box.allPoints[1] = m_Box.allPointsBase[1];
+//    m_Box.allPoints[2] = m_Box.allPointsBase[2];
+//    m_Box.allPoints[3] = m_Box.allPointsBase[3];
+//    m_Box.allPoints[4] = m_Box.allPointsBase[4];
+//    m_Box.allPoints[5] = m_Box.allPointsBase[5];
+//    m_Box.allPoints[6] = m_Box.allPointsBase[6];
+//    m_Box.allPoints[7] = m_Box.allPointsBase[7];
 
-  m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+    //reset sphere
+//    m_Sphere.Center = m_Sphere.BaseCenter;
 
+    //Set new position
+    m_position.translation(pos.X, pos.Y, pos.Z);
+    m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+
+//    Matrix combined = m_position * m_rotation;
+
+//    m_Box.Min += combined.translation()+combined.forward()+combined.up()+combined.right();
+//    m_Box.Max += combined.translation()+combined.forward()+combined.up()+combined.right();
+
+//    for(unsigned int i = 0; i < 8; i++){
+//        m_Box.allPoints[i] += combined.translation();
+//    }
+
+//    m_Sphere.Center += m_position.translation();
 }
 
 void GameObject::loadRessources(const char* obj, const char* vertexShader, const char* fragmentShader)

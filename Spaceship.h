@@ -43,6 +43,9 @@ private:
 	/** Min forward speed */
 	float MinSpeed;
 
+    /** */
+    float SpeedMult;
+
 	/** Current forward speed */
 	float CurrentForwardSpeed;
 

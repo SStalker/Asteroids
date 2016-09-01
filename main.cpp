@@ -240,27 +240,27 @@ void DrawScene()
     DrawGroundGrid();
     sp.draw();
 
-		// Draw every asteroid
-		for(auto& asteroid : *Game::getInstance()->getAsteroidList())
-		{
-			asteroid->update(deltaTime);
-			asteroid->draw();
-			//Debug::Drawmatrix(asteroid->getPosition());
-			//cout << asteroid->getPosition().translation() << endl;
-		}
+    // Draw every asteroid
+    for(auto& asteroid : *Game::getInstance()->getAsteroidList())
+    {
+        asteroid->update(deltaTime);
+        asteroid->draw();
+//            asteroid->drawSphere();
+//            asteroid->drawBounding();
+        //Debug::Drawmatrix(asteroid->getPosition());
+        //cout << asteroid->getPosition().translation() << endl;
+    }
 
-		// Draw the earth
-		for(auto& planet : *Game::getInstance()->getPlanetList())
-		{
-			planet->update(deltaTime);
-			planet->draw();
-			//Debug::Drawmatrix(planet->getPosition());
-			//cout << "Name: " << planet->getName() << endl;
-		}
-
-    Matrix cPos = sp.getPosition();
-    Matrix cRot = sp.getRotation();
-    Matrix combined = cPos*cRot;
+    // Draw the earth
+    for(auto& planet : *Game::getInstance()->getPlanetList())
+    {
+        planet->update(deltaTime);
+        planet->draw();
+//        planet->drawSphere();
+//        planet->drawBounding();
+        //Debug::Drawmatrix(planet->getPosition());
+        //cout << "Name: " << planet->getName() << endl;
+    }
 
 
     glutSwapBuffers();
