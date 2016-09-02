@@ -364,7 +364,7 @@ void Model::buildVerteciesForTexture()
             for(int j = 0; j< m_MaterialCount; j++){
                 if(m_pMaterials[j].getName().compare(nextMat->mtl) == 0){
                     mtl = &m_pMaterials[j];
-//                    cout << mtl.getName()<< endl;
+//                  cout << mtl.getName()<< endl;
                 }
             }
 

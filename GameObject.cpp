@@ -43,6 +43,7 @@ void GameObject::update(float deltaTime)
   for(unsigned int i = 0; i < 8; i++){
       m_Box.allPoints[i] = m_Box.allPointsBase[i];
   }
+
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
   m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);

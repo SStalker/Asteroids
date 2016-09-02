@@ -282,6 +282,7 @@ void DrawScene()
         planet->draw();
         //planet->drawSphere();
         //planet->drawBounding();
+
         //Debug::Drawmatrix(planet->getPosition());
     }
 
