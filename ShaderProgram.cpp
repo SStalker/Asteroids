@@ -14,10 +14,12 @@ ShaderProgram::~ShaderProgram(){
 
 bool ShaderProgram::load(const char* VertexShader, const char* FragmentShader){
 
+    GLenum error = glGetError();
+
 	m_VertexShader = glCreateShader(GL_VERTEX_SHADER);
 	m_FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	
-    GLenum error = glGetError();
+    error = glGetError();
          if( error != GL_NO_ERROR ) {
             printf( "Error binding shader! %s\n", gluErrorString( error ) );
          }
@@ -99,13 +101,13 @@ bool ShaderProgram::compile(string* CompileErrors){
     {
         return false;
     }
-    cout << "VertexShader compiled successful" << endl;
+//    cout << "VertexShader compiled successful" << endl;
 
     if(fLoaded && !compileShader(m_FragmentShader, CompileErrors))
     {
         return false;
     }
-    cout << "FragmentShader compiled successful" << endl;
+//    cout << "FragmentShader compiled successful" << endl;
 
 	m_ShaderProgram = glCreateProgram();
 	
@@ -118,7 +120,7 @@ bool ShaderProgram::compile(string* CompileErrors){
 	glLinkProgram(m_ShaderProgram);
 
 	if(hasLinked(m_ShaderProgram))
-		cout << "ShaderProgram successful linked" << endl;		
+//		cout << "ShaderProgram successful linked" << endl;
 
 	if(vLoaded)
 		glDeleteShader(m_VertexShader);	

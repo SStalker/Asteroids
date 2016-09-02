@@ -60,9 +60,6 @@ void BoundingBox::calculateAllPoints()
     allPoints[6] = allPointsBase[6] = Vector(Min.X, Max.Y, Max.Z); //7
     allPoints[7] = allPointsBase[7] = Vector(Max.X, Max.Y, Max.Z); //8
 
-//    for(unsigned int i = 0; i < 8; i++)
-//        cout << allPoints[i];
-
 }
 
 BoundingSphere::BoundingSphere()
@@ -73,7 +70,7 @@ BoundingSphere::BoundingSphere(const Vector& center, const float& radius ) : Cen
 {
 }
 
-Model::Model() : m_pVertices(NULL), m_pMaterials(NULL), m_MaterialCount(0), m_VertexCount(0)
+Model::Model() : m_pVertices(NULL), m_pMaterials(NULL), m_MaterialCount(0), m_VertexCount(0), m_MaterialAtCount(0)
 {
 }
 
@@ -103,7 +100,7 @@ bool Model::load( const char* Filename, bool FitSize)
 
     vector<Usemtl*> usemtl;
 
-    cout << Filename << endl;
+//    cout << Filename << endl;
 
     file.open(Filename);
 
@@ -191,7 +188,6 @@ bool Model::load( const char* Filename, bool FitSize)
         scale();
     }
 
-
     //Calc all points of bbox
     m_Box.calculateAllPoints();
 
@@ -213,10 +209,10 @@ bool Model::load( const char* Filename, bool FitSize)
     if(!loadMtl(mtlName, path)){
         cout << "No mtl was found!" << endl;
     }else{
-        cout << "Used Materials: " << endl;
-        for(int i = 0; i < m_MaterialCount; i++){
-            cout << m_pMaterials[i].getName() << endl;
-        }
+//        cout << "Used Materials: " << endl;
+//        for(int i = 0; i < m_MaterialCount; i++){
+//            cout << m_pMaterials[i].getName() << endl;
+//        }
     }
 
     //bind material position to model
@@ -269,7 +265,7 @@ bool Model::loadMtl(string filename, string path)
     cout << "toOpen: " << toOpen << endl;
     file.open(toOpen);
 
-    cout << file.is_open() << endl;
+//    cout << file.is_open() << endl;
 
     if(file.is_open()){
         while(getline(file, line)){
@@ -291,25 +287,28 @@ bool Model::loadMtl(string filename, string path)
                     current = mtl.back();
                     current->setName(splitted[1]);
                 }else if(splitted[0].compare("Kd") == 0){
-//                    cout << "Kd" << endl;
+                    cout << "Kd" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
                     cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setDiffuseColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ks") == 0){
-//                    cout << "Ks" << endl;
+                    cout << "Ks" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ka") == 0){
-//                    cout << "Ka" << endl;
+                    cout << "Ka" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setAmbientColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ns") == 0){
-//                    cout << "Ns" << endl;
+                    cout << "Ns" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    //cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularExponent(color[0]);
                 }else if(splitted[0].compare("map_Kd") == 0){
 //                    cout << "map_Kd" << endl;
@@ -342,7 +341,7 @@ void Model::buildVerteciesForTexture()
     Usemtl* nextMat = &m_pMaterialsAt[0];
     //temp. map for material names and their vertices
     map<string, vector<Vertex>> MTLVertices;
-    Material mtl;
+    Material *mtl;
     unsigned int counter = 1;
 
     //fill map with all keys
@@ -355,12 +354,17 @@ void Model::buildVerteciesForTexture()
 
     //Iterate over all vertices and add them to their material array in vertices
     for(unsigned int i = 0; i<m_VertexCount; i+=3){
+        //cout << "byCount: " << nextMat->byCount << " i: " << i << " counter: " << counter << " m_MaterialAtCount: " << m_MaterialAtCount << endl;
+        if(m_MaterialAtCount > 1000){
+          cout << "m_MaterialAtCount: " << m_MaterialAtCount << endl;
+          exit(42);
+        }
 
         if(nextMat->byCount == i && counter <= m_MaterialAtCount){
-            for(int i = 0; i< m_MaterialCount; i++){
-                if(m_pMaterials[i].getName().compare(nextMat->mtl) == 0){
-                    mtl = m_pMaterials[i];
-                    cout << mtl.getName()<< endl;
+            for(int j = 0; j< m_MaterialCount; j++){
+                if(m_pMaterials[j].getName().compare(nextMat->mtl) == 0){
+                    mtl = &m_pMaterials[j];
+//                    cout << mtl.getName()<< endl;
                 }
             }
 
@@ -370,9 +374,9 @@ void Model::buildVerteciesForTexture()
             }
         }
 
-        MTLVertices[mtl.getName()].push_back(m_pVertices[i]);
-        MTLVertices[mtl.getName()].push_back(m_pVertices[i+1]);
-        MTLVertices[mtl.getName()].push_back(m_pVertices[i+2]);
+        MTLVertices[mtl->getName()].push_back(m_pVertices[i]);
+        MTLVertices[mtl->getName()].push_back(m_pVertices[i+1]);
+        MTLVertices[mtl->getName()].push_back(m_pVertices[i+2]);
     }
 
 
@@ -456,7 +460,7 @@ void Model::drawTriangles() const
     GLuint specExpID = sp.getParameterID("SpecExp");
     GLuint textureID = sp.getParameterID("DiffuseTexture");
 
-    Material mtl;
+    Material *mtl;
     int mtlNumber = 0;
     GLuint start = 0;
 
@@ -486,21 +490,22 @@ void Model::drawTriangles() const
 
 
         //fetch the right material
-        mtl = m_pMaterials[mtlNumber];
-
+        mtl = &m_pMaterials[mtlNumber];
 
         //Set parameter for Shader
-        sp.setParameter(diffID, mtl.getDiffuseColor());
-        sp.setParameter(specID, mtl.getSpecularColor());
-        sp.setParameter(ambID, mtl.getAmbientColor());
-        sp.setParameter(specExpID, mtl.getSpecularExponent());
+        sp.setParameter(diffID, mtl->getDiffuseColor());
+        sp.setParameter(specID,  mtl->getSpecularColor());
+        sp.setParameter(ambID,  mtl->getAmbientColor());
+        sp.setParameter(specExpID, mtl->getSpecularExponent());
         sp.setParameter(textureID, 0);
         sp.setParameter(lightPos, g_LightPos);
         sp.setParameter(lightColor, Color(1.,1.,1.));
         CheckGLErrors();
+
         //Apply texture
-        mtl.getDiffuseTexture().apply();
-//        //Replace old texture
+        mtl->getDiffuseTexture().apply();
+
+        //Replace old texture
         glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
         // we draw our plane for every material

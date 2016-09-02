@@ -7,6 +7,8 @@ GameObject::GameObject()
   this->dead = false;
   this->name = "GameObject";
   this->lifeSpan = 0;
+  this->pos = Vector(0.f,0.f,0.f);
+  this->rot = Vector(0.f,0.f,0.f);
 
   this->timeStamp = time(nullptr);
   cout << timeStamp << endl;
@@ -15,6 +17,7 @@ GameObject::GameObject()
 GameObject::GameObject(const Vector& startPos) : GameObject()
 {
   this->pos = startPos;
+  this->rot = Vector(0.f,0.f,0.f);
 }
 
 GameObject::GameObject(const Vector& startPos, const Vector& startRotation)
@@ -28,6 +31,7 @@ void GameObject::draw()
   glPushMatrix();
       glMultMatrixf(m_position*m_rotation);
       drawTriangles();
+//      drawBounding();
   glPopMatrix();
 }
 
@@ -39,20 +43,20 @@ void GameObject::update(float deltaTime)
   for(unsigned int i = 0; i < 8; i++){
       m_Box.allPoints[i] = m_Box.allPointsBase[i];
   }
-
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
   m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+}
 
+void GameObject::updateBounding(){
+    //Calc new points after transformation
+    Matrix combined = m_position * m_rotation;
 
-  //Calc new points after transformation
-  Matrix combined = m_position * m_rotation;
+    for(unsigned int i = 0; i < 8; i++){
+        m_Box.allPoints[i] = combined * m_Box.allPointsBase[i];
+    }
 
-  for(unsigned int i = 0; i < 8; i++){
-      m_Box.allPoints[i] = combined * m_Box.allPoints[i];
-  }
-
-  m_Sphere.Center = combined * m_Sphere.BaseCenter;
+    m_Sphere.Center = combined * m_Sphere.BaseCenter;
 }
 
 void GameObject::loadRessources(const char* obj, const char* vertexShader, const char* fragmentShader)
@@ -65,7 +69,6 @@ void GameObject::loadRessources(const char* obj, const char* vertexShader, const
 
 bool GameObject::alive()
 {
-  //cout << name << " " << lifeSpan << endl;
   if(this->lifeSpan == 0)
     return true;
 

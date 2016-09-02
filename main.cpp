@@ -75,8 +75,9 @@ float g_right = 0;
 void SetupDefaultGLSettings();
 void DrawScene();
 void MouseCallback(int Button, int State, int x, int y);
-void MouseMoveCallback(int x, int y);
+void MousePassiveMoveCallback(int x, int y);
 void KeyboardCallback( unsigned char key, int x, int y);
+void MouseMoveCallback(int x, int y);
 
 enum RenderMode
 {
@@ -106,25 +107,27 @@ int main(int argc, char * argv[])
     glutDisplayFunc(DrawScene);
     glutMouseFunc(MouseCallback);
     glutKeyboardFunc(KeyboardCallback);
-    glutPassiveMotionFunc(MouseMoveCallback);
+    glutPassiveMotionFunc(MousePassiveMoveCallback);
+    glutMotionFunc(MouseMoveCallback);
 
-    //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
+
+//    if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl")){
     if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
         cout << "Could not load model";
         exit(6);
     }
 
 		sp.setPos(Vector(0.f,0.f,-20.f));
-
 		game->init();
 		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
+
     glutMainLoop();
 }
 
 
 void SetupDefaultGLSettings()
 {
-    glClearColor(255, 255, 255, 255);
+    glClearColor(0, 0, 0, 255);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -184,17 +187,8 @@ void DrawGroundGrid()
 
 }
 
-void MouseCallback(int Button, int State, int x, int y)
+void mouseMove(int x, int y)
 {
-	if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
-    sp.fire();
-  }
-
-}
-
-void MouseMoveCallback( int x, int y)
-{
-
     int mouseX = x-centerX;
     int mouseY = y-centerY;
 
@@ -209,6 +203,23 @@ void MouseMoveCallback( int x, int y)
 
     // Set the cursor back to center;
     glutWarpPointer( centerX, centerY );
+}
+
+void MouseCallback(int Button, int State, int x, int y)
+{
+    if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
+        sp.fire();
+    }
+}
+
+void MousePassiveMoveCallback( int x, int y)
+{
+    mouseMove(x,y);
+}
+
+void MouseMoveCallback(int x, int y)
+{
+    mouseMove(x,y);
 }
 
 void KeyboardCallback( unsigned char key, int x, int y)
@@ -233,14 +244,17 @@ void DrawScene()
     oldTime = newtime;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    GLfloat lpos[4];
-    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
-    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
     sp.setDeltaTime(deltaTime);
     sp.update(deltaTime);
 
     DrawGroundGrid();
+
+    GLfloat lpos[4];
+    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
+    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+
+
     sp.draw();
 
     // Draw every asteroid
@@ -254,6 +268,7 @@ void DrawScene()
 					alist->erase(alist->begin()+i);
 				}else{
 					(*alist)[i]->update(deltaTime);
+					(*alist)[i]->updateBounding();
 					(*alist)[i]->draw();
 					//(*alist)[i]->drawSphere();
 				}
@@ -263,27 +278,28 @@ void DrawScene()
     for(auto& planet : *Game::getInstance()->getPlanetList())
     {
         planet->update(deltaTime);
+        planet->updateBounding();
         planet->draw();
         //planet->drawSphere();
         //planet->drawBounding();
         //Debug::Drawmatrix(planet->getPosition());
     }
 
-		// Draw the projectiles
-		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+    // Draw the projectiles
+    vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
 
-		for(int i = 0; i < plist->size(); i++)
-		{
-				if((*plist)[i]->isDead())
-				{
-					delete (*plist)[i];
-					plist->erase(plist->begin()+i);
-				}else{
-					(*plist)[i]->update(deltaTime);
-					(*plist)[i]->draw();
-					//(*plist)[i]->drawSphere();
-				}
-		}
+    for(int i = 0; i < plist->size(); i++)
+    {
+        if((*plist)[i]->isDead())
+        {
+            delete (*plist)[i];
+            plist->erase(plist->begin()+i);
+        }else{
+            (*plist)[i]->update(deltaTime);
+            (*plist)[i]->updateBounding();
+            (*plist)[i]->draw();
+        }
+    }
 
 		cd->react();
 
