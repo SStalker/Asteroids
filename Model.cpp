@@ -213,10 +213,10 @@ bool Model::load( const char* Filename, bool FitSize)
     if(!loadMtl(mtlName, path)){
         cout << "No mtl was found!" << endl;
     }else{
-        cout << "Used Materials: " << endl;
-        for(int i = 0; i < m_MaterialCount; i++){
-            cout << m_pMaterials[i].getName() << endl;
-        }
+//        cout << "Used Materials: " << endl;
+//        for(int i = 0; i < m_MaterialCount; i++){
+//            cout << m_pMaterials[i].getName() << endl;
+//        }
     }
 
     //bind material position to model
@@ -266,7 +266,7 @@ bool Model::loadMtl(string filename, string path)
 
     toOpen.append(filename);
     toOpen.erase(toOpen.find_last_not_of(" \n\r\t")+1);
-    cout << "toOpen: " << toOpen << endl;
+//    cout << "toOpen: " << toOpen << endl;
     file.open(toOpen);
 
     cout << file.is_open() << endl;
@@ -291,7 +291,7 @@ bool Model::loadMtl(string filename, string path)
                     current = mtl.back();
                     current->setName(splitted[1]);
                 }else if(splitted[0].compare("Kd") == 0){
-//                    cout << "Kd" << endl;
+                    cout << "Kd" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
                     cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
@@ -313,7 +313,7 @@ bool Model::loadMtl(string filename, string path)
                     current->setSpecularExponent(color[0]);
                 }else if(splitted[0].compare("map_Kd") == 0){
 //                    cout << "map_Kd" << endl;
-                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
+//                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
                     current->setDiffuseTexture((path+splitted[1]).c_str());
                 }
             }
@@ -485,7 +485,7 @@ void Model::drawTriangles() const
 
 
         //Set parameter for Shader
-        sp.setParameter(diffID, mtl.getDiffuseColor());
+        sp.setParameter(diffID,  mtl.getDiffuseColor());
         sp.setParameter(specID, mtl.getSpecularColor());
         sp.setParameter(ambID, mtl.getAmbientColor());
         sp.setParameter(specExpID, mtl.getSpecularExponent());

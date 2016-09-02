@@ -108,15 +108,15 @@ int main(int argc, char * argv[])
     glutPassiveMotionFunc(MousePassiveMoveCallback);
     glutMotionFunc(MouseMoveCallback);
 
-    //sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl");
+
+//    if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl")){
     if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
         cout << "Could not load model";
         exit(6);
     }
 
-		sp.setPos(Vector(0.f,0.f,-20.f));
-
-		game->init();
+    sp.setPos(Vector(0.f,0.f,-20.f));
+    game->init();
 
     glutMainLoop();
 }
@@ -148,10 +148,10 @@ void SetupDefaultGLSettings()
     float diff[4] = {1,1,1,1};
     float amb[4]  = {0.2f,0.2f,0.2f,1};
     float spec[4] = {0.5f,0.5f,0.5f,1};
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 300);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diff);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
+    glMateriali(GL_FRONT, GL_SHININESS, 30);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
@@ -207,9 +207,6 @@ void MouseCallback(int Button, int State, int x, int y)
     if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
         sp.fire();
     }
-
-    cout << "click" << endl;
-
 }
 
 void MousePassiveMoveCallback( int x, int y)
@@ -244,14 +241,17 @@ void DrawScene()
     oldTime = newtime;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    GLfloat lpos[4];
-    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
-    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
     sp.setDeltaTime(deltaTime);
     sp.update(deltaTime);
 
     DrawGroundGrid();
+
+    GLfloat lpos[4];
+    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
+    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+
+
     sp.draw();
 
     // Draw every asteroid
@@ -259,7 +259,7 @@ void DrawScene()
     {
         asteroid->update(deltaTime);
         asteroid->draw();
-//        asteroid->drawSphere();
+        asteroid->drawSphere();
 //        asteroid->drawBounding();
         //Debug::Drawmatrix(asteroid->getPosition());
         //cout << asteroid->getPosition().translation() << endl;
@@ -270,26 +270,26 @@ void DrawScene()
     {
         planet->update(deltaTime);
         planet->draw();
-//        planet->drawSphere();
+        planet->drawSphere();
 //        planet->drawBounding();
         //Debug::Drawmatrix(planet->getPosition());
         //cout << "Name: " << planet->getName() << endl;
     }
 
-		// Draw the projectiles
-		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+    // Draw the projectiles
+    vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
 
-		for(int i = 0; i < plist->size(); i++)
-		{
-				if((*plist)[i]->isDead())
-				{
-					delete (*plist)[i];
-					plist->erase(plist->begin()+i);
-				}else{
-					(*plist)[i]->update(deltaTime);
-					(*plist)[i]->draw();
-				}
-		}
+    for(int i = 0; i < plist->size(); i++)
+    {
+        if((*plist)[i]->isDead())
+        {
+            delete (*plist)[i];
+            plist->erase(plist->begin()+i);
+        }else{
+            (*plist)[i]->update(deltaTime);
+            (*plist)[i]->draw();
+        }
+    }
 
     glutSwapBuffers();
     glutPostRedisplay();

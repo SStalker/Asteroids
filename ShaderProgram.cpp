@@ -14,10 +14,12 @@ ShaderProgram::~ShaderProgram(){
 
 bool ShaderProgram::load(const char* VertexShader, const char* FragmentShader){
 
+    GLenum error = glGetError();
+
 	m_VertexShader = glCreateShader(GL_VERTEX_SHADER);
 	m_FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	
-    GLenum error = glGetError();
+    error = glGetError();
          if( error != GL_NO_ERROR ) {
             printf( "Error binding shader! %s\n", gluErrorString( error ) );
          }

@@ -28,6 +28,7 @@ void GameObject::draw()
   glPushMatrix();
       glMultMatrixf(m_position*m_rotation);
       drawTriangles();
+//      drawBounding();
   glPopMatrix();
 }
 
