@@ -124,7 +124,7 @@ int main(int argc, char * argv[])
 
 void SetupDefaultGLSettings()
 {
-    glClearColor(255, 255, 255, 255);
+    glClearColor(0, 0, 0, 255);
     glClearDepth(1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -148,10 +148,10 @@ void SetupDefaultGLSettings()
     float diff[4] = {1,1,1,1};
     float amb[4]  = {0.2f,0.2f,0.2f,1};
     float spec[4] = {0.5f,0.5f,0.5f,1};
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, diff);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-    glMateriali(GL_FRONT, GL_SHININESS, 30);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 300);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);

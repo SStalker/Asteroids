@@ -101,13 +101,13 @@ bool ShaderProgram::compile(string* CompileErrors){
     {
         return false;
     }
-    cout << "VertexShader compiled successful" << endl;
+//    cout << "VertexShader compiled successful" << endl;
 
     if(fLoaded && !compileShader(m_FragmentShader, CompileErrors))
     {
         return false;
     }
-    cout << "FragmentShader compiled successful" << endl;
+//    cout << "FragmentShader compiled successful" << endl;
 
 	m_ShaderProgram = glCreateProgram();
 	
@@ -120,7 +120,7 @@ bool ShaderProgram::compile(string* CompileErrors){
 	glLinkProgram(m_ShaderProgram);
 
 	if(hasLinked(m_ShaderProgram))
-		cout << "ShaderProgram successful linked" << endl;		
+//		cout << "ShaderProgram successful linked" << endl;
 
 	if(vLoaded)
 		glDeleteShader(m_VertexShader);	

@@ -60,9 +60,6 @@ void BoundingBox::calculateAllPoints()
     allPoints[6] = allPointsBase[6] = Vector(Min.X, Max.Y, Max.Z); //7
     allPoints[7] = allPointsBase[7] = Vector(Max.X, Max.Y, Max.Z); //8
 
-//    for(unsigned int i = 0; i < 8; i++)
-//        cout << allPoints[i];
-
 }
 
 BoundingSphere::BoundingSphere()
@@ -103,7 +100,7 @@ bool Model::load( const char* Filename, bool FitSize)
 
     vector<Usemtl*> usemtl;
 
-    cout << Filename << endl;
+//    cout << Filename << endl;
 
     file.open(Filename);
 
@@ -265,10 +262,10 @@ bool Model::loadMtl(string filename, string path)
 
     toOpen.append(filename);
     toOpen.erase(toOpen.find_last_not_of(" \n\r\t")+1);
-//    cout << "toOpen: " << toOpen << endl;
+    cout << "toOpen: " << toOpen << endl;
     file.open(toOpen);
 
-    cout << file.is_open() << endl;
+//    cout << file.is_open() << endl;
 
     if(file.is_open()){
         while(getline(file, line)){
@@ -296,23 +293,26 @@ bool Model::loadMtl(string filename, string path)
                     cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setDiffuseColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ks") == 0){
-//                    cout << "Ks" << endl;
+                    cout << "Ks" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ka") == 0){
-//                    cout << "Ka" << endl;
+                    cout << "Ka" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setAmbientColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ns") == 0){
-//                    cout << "Ns" << endl;
+                    cout << "Ns" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
+                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularExponent(color[0]);
                 }else if(splitted[0].compare("map_Kd") == 0){
 //                    cout << "map_Kd" << endl;
-//                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
+                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
                     current->setDiffuseTexture((path+splitted[1]).c_str());
                 }
             }
@@ -359,7 +359,7 @@ void Model::buildVerteciesForTexture()
             for(int i = 0; i< m_MaterialCount; i++){
                 if(m_pMaterials[i].getName().compare(nextMat->mtl) == 0){
                     mtl = m_pMaterials[i];
-                    cout << mtl.getName()<< endl;
+//                    cout << mtl.getName()<< endl;
                 }
             }
 
@@ -484,9 +484,9 @@ void Model::drawTriangles() const
 
 
         //Set parameter for Shader
-        sp.setParameter(diffID,  mtl.getDiffuseColor());
-        sp.setParameter(specID, mtl.getSpecularColor());
-        sp.setParameter(ambID, mtl.getAmbientColor());
+        sp.setParameter(diffID, mtl.getDiffuseColor());
+        sp.setParameter(specID,  mtl.getSpecularColor());
+        sp.setParameter(ambID,  mtl.getAmbientColor());
         sp.setParameter(specExpID, mtl.getSpecularExponent());
         sp.setParameter(textureID, 0);
         sp.setParameter(lightPos, g_LightPos);
@@ -494,7 +494,7 @@ void Model::drawTriangles() const
         CheckGLErrors();
         //Apply texture
         mtl.getDiffuseTexture().apply();
-//        //Replace old texture
+        //Replace old texture
         glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
         // we draw our plane for every material

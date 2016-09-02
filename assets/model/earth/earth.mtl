@@ -13,7 +13,7 @@ newmtl 01___Default
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
 	map_Ka C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_earth.jpg
-	map_Kd C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_earth.jpg
+	map_Kd C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_earth.bmp
 	map_Ke C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_night_lights.jpg
 	map_bump C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_bump.jpg
 	bump C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_bump.jpg
@@ -30,5 +30,5 @@ newmtl 02___Default
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
 	map_Ka C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_clouds.jpg
-	map_Kd C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_clouds.jpg
+	map_Kd C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_clouds.bmp
 	map_d C:\Documents and Settings\glenn\Desktop\erth\02\4096\4096_clouds.jpg
