@@ -19,6 +19,7 @@
 #include "global.h"
 #include "Spaceship.h"
 #include "Game.h"
+#include "CollisionDetection.h"
 
 class Debug{
 public:
@@ -59,6 +60,7 @@ float oldTime = 0;
 
 
 Game *game = Game::getInstance();
+CollisionDetection *cd;
 Camera g_Camera;
 Model g_Model;
 Spaceship sp;
@@ -115,7 +117,7 @@ int main(int argc, char * argv[])
 		sp.setPos(Vector(0.f,0.f,-20.f));
 
 		game->init();
-
+		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
     glutMainLoop();
 }
 
@@ -242,25 +244,29 @@ void DrawScene()
     sp.draw();
 
     // Draw every asteroid
-    for(auto& asteroid : *Game::getInstance()->getAsteroidList())
-    {
-        asteroid->update(deltaTime);
-        asteroid->draw();
-//        asteroid->drawSphere();
-//        asteroid->drawBounding();
-        //Debug::Drawmatrix(asteroid->getPosition());
-        //cout << asteroid->getPosition().translation() << endl;
-    }
+		vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+
+		for(int i = 0; i < alist->size(); i++)
+		{
+				if((*alist)[i]->isDead())
+				{
+					delete (*alist)[i];
+					alist->erase(alist->begin()+i);
+				}else{
+					(*alist)[i]->update(deltaTime);
+					(*alist)[i]->draw();
+					//(*alist)[i]->drawSphere();
+				}
+		}
 
     // Draw the earth
     for(auto& planet : *Game::getInstance()->getPlanetList())
     {
         planet->update(deltaTime);
         planet->draw();
-//        planet->drawSphere();
-//        planet->drawBounding();
+        //planet->drawSphere();
+        //planet->drawBounding();
         //Debug::Drawmatrix(planet->getPosition());
-        //cout << "Name: " << planet->getName() << endl;
     }
 
 		// Draw the projectiles
@@ -275,8 +281,11 @@ void DrawScene()
 				}else{
 					(*plist)[i]->update(deltaTime);
 					(*plist)[i]->draw();
+					//(*plist)[i]->drawSphere();
 				}
 		}
+
+		cd->react();
 
     glutSwapBuffers();
     glutPostRedisplay();

@@ -48,7 +48,7 @@ void Game::init()
       Vector pos(unif(rand_engine),unif(rand_engine),unif(rand_engine));
       Vector rot(unif(rand_engine),unif(rand_engine),unif(rand_engine));
       //cout << "As Pos: " << v << endl;
-      asteroidList->push_back(new Asteroid(pos, rot));
+      asteroidList->push_back(new Asteroid(pos, rot, "Asteroid" + to_string(asteroidList->size())));
     }
   }
 }

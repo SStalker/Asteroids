@@ -15,6 +15,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <limits>
 #include <stdio.h>
 
 #include "ShaderProgram.h"
@@ -83,12 +84,27 @@ public:
     float Radius;
 };
 
+/*class Projection{
+public:
+    float Min;
+    float Max;
+
+    float overlap(Projection& p){
+      return 0.5f*( this->size() + p.size() - max(Max, p.Max) + min(Min, p.Min) );
+    }
+
+    float size(){
+        return Max-Min;
+    }
+};*/
+
 class Model
 {
 public:
     Model();
     ~Model();
     const BoundingBox& boundingBox() const;
+    const BoundingSphere& boundingSphere() const;
     bool load( const char* Filename, bool FitSize=true);
     bool load( const char* Filename, const char* VertexShader, const char* FragmentShader, bool FitSize=true);
     bool loadMtl(string filename, string path);
@@ -96,10 +112,12 @@ public:
     void drawLines() const;
     void drawTriangles() const;
     void drawBounding() const;
+    // projectOnVector(const Vector& v);
 
     // Hilfsfunktionen
     vector<string> & split(const string &s, char delim, vector<string> &elems);
     vector<string> split(const string &s, char delim);
+    //vector<Vector*> getAllNormals();
 
     void createFace(string line);
     void createVertices();
@@ -127,6 +145,7 @@ protected:
     vector<unsigned int> mtlChange;
 
     vector<Vector*> my_vertices;
+    //vector<Vector*> my_normals;
     vector<Vector*> my_texture_points;
     vector<MyFace*> faces;
     vector<Material*> mtl;

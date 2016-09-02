@@ -11,7 +11,7 @@ private:
 public:
   Asteroid();
   Asteroid(const Vector& startPos);
-  Asteroid(const Vector& startPos, const Vector& startRot);
+  Asteroid(const Vector& startPos, const Vector& startRot, const string name);
 
   void update(float deltaTime);
 };

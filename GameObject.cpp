@@ -42,10 +42,6 @@ void GameObject::update(float deltaTime)
 
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
-
-
-  //Set new position
-  m_position.translation(pos.X, pos.Y, pos.Z);
   m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
 
 
@@ -69,7 +65,7 @@ void GameObject::loadRessources(const char* obj, const char* vertexShader, const
 
 bool GameObject::alive()
 {
-  cout << name << " " << lifeSpan << endl;
+  //cout << name << " " << lifeSpan << endl;
   if(this->lifeSpan == 0)
     return true;
 

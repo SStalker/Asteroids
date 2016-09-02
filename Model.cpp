@@ -416,6 +416,11 @@ const BoundingBox& Model::boundingBox() const
     return m_Box;
 }
 
+const BoundingSphere& Model::boundingSphere() const
+{
+    return m_Sphere;
+}
+
 void Model::drawLines() const
 {
     // Aufgabe 1
@@ -558,6 +563,18 @@ void Model::drawBounding() const
     glEnd();
 }
 
+/*Projection Model::projectOnVector(const Vector& v)
+{
+  Projection p;
+  p.Min = numeric_limits<float>::max();
+  p.Max = -numeric_limits<float>::max();
+
+  for(auto vec : my_vertices){
+    float dot = v.dot(*vec);
+    p.Min = min(dot, p.Min);
+    p.Max = max(dot, p.Max);
+  }
+}*/
 
 vector<string> &Model::split(const string &s, char delim, vector<string> &elems)
 {
@@ -576,6 +593,11 @@ vector<string> Model::split(const string &s, char delim)
     split(s, delim, elems);
     return elems;
 }
+
+/*vector<Vector*> Model::getAllNormals()
+{
+  return my_normals;
+}*/
 
 // 2867/3783 2881/3798 2894/3812 2880/3797
 void Model::createFace(string line)
@@ -727,7 +749,7 @@ void Model::createVertices()
         b = m_pVertices[i*3+1].Position = *my_vertices[ PosIdx1];
         c = m_pVertices[i*3+2].Position = *my_vertices[ PosIdx2];
 
-        //Calculate boundingbox
+        // Calculate boundingbox
         calcBounding(a,b,c);
 
         normal = (b-a).cross(c-a);
@@ -736,6 +758,8 @@ void Model::createVertices()
         m_pVertices[i*3].Normal =
         m_pVertices[i*3+1].Normal =
         m_pVertices[i*3+2].Normal = normal;
+
+        //my_normals.push_back(&m_pVertices[i*3].Normal);
     }
 }
 
@@ -836,4 +860,3 @@ void CheckGLErrors()
         throw std::exception();
     }
 }
-

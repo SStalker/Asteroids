@@ -11,9 +11,10 @@ Asteroid::Asteroid(const Vector& startPos)
   loadRessources("assets/model/asteroid.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl");
 }
 
-Asteroid::Asteroid(const Vector& startPos, const Vector& startRot)
+Asteroid::Asteroid(const Vector& startPos, const Vector& startRot, const string name)
 : GameObject(startPos, startRot)
 {
+  setName(name);
   loadRessources("assets/model/asteroid.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl");
 }
 

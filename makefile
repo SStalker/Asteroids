@@ -19,4 +19,5 @@ all:
 	Projectile.cpp \
 	Planet.cpp \
 	Game.cpp \
+	CollisionDetection.cpp \
 	-o main $(OPTS)
