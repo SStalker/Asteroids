@@ -39,16 +39,17 @@ void GameObject::update(float deltaTime)
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
   m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+}
 
+void GameObject::updateBounding(){
+    //Calc new points after transformation
+    Matrix combined = m_position * m_rotation;
 
-  //Calc new points after transformation
-  Matrix combined = m_position * m_rotation;
+    for(unsigned int i = 0; i < 8; i++){
+        m_Box.allPoints[i] = combined * m_Box.allPointsBase[i];
+    }
 
-  for(unsigned int i = 0; i < 8; i++){
-      m_Box.allPoints[i] = combined * m_Box.allPointsBase[i];
-  }
-
-  m_Sphere.Center = combined * m_Sphere.BaseCenter;
+    m_Sphere.Center = combined * m_Sphere.BaseCenter;
 }
 
 void GameObject::loadRessources(const char* obj, const char* vertexShader, const char* fragmentShader)

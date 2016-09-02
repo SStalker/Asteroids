@@ -258,6 +258,7 @@ void DrawScene()
     for(auto& asteroid : *Game::getInstance()->getAsteroidList())
     {
         asteroid->update(deltaTime);
+        asteroid->updateBounding();
         asteroid->draw();
         asteroid->drawSphere();
         asteroid->drawBounding();
@@ -269,6 +270,7 @@ void DrawScene()
     for(auto& planet : *Game::getInstance()->getPlanetList())
     {
         planet->update(deltaTime);
+        planet->updateBounding();
         planet->draw();
         planet->drawSphere();
         planet->drawBounding();
@@ -287,6 +289,7 @@ void DrawScene()
             plist->erase(plist->begin()+i);
         }else{
             (*plist)[i]->update(deltaTime);
+            (*plist)[i]->updateBounding();
             (*plist)[i]->draw();
         }
     }

@@ -61,6 +61,7 @@ public:
 
   void setLifeSpan(int lifeSpan);
   int getLifeSpan();
+  void updateBounding();
 };
 
 #endif
