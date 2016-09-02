@@ -191,7 +191,6 @@ bool Model::load( const char* Filename, bool FitSize)
         scale();
     }
 
-
     //Calc all points of bbox
     m_Box.calculateAllPoints();
 

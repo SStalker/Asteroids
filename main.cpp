@@ -260,7 +260,7 @@ void DrawScene()
         asteroid->update(deltaTime);
         asteroid->draw();
         asteroid->drawSphere();
-//        asteroid->drawBounding();
+        asteroid->drawBounding();
         //Debug::Drawmatrix(asteroid->getPosition());
         //cout << asteroid->getPosition().translation() << endl;
     }
@@ -271,7 +271,7 @@ void DrawScene()
         planet->update(deltaTime);
         planet->draw();
         planet->drawSphere();
-//        planet->drawBounding();
+        planet->drawBounding();
         //Debug::Drawmatrix(planet->getPosition());
         //cout << "Name: " << planet->getName() << endl;
     }

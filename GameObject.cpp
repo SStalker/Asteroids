@@ -36,15 +36,6 @@ void GameObject::update(float deltaTime)
 {
   alive();
 
-  //Reset Bounding box
-  for(unsigned int i = 0; i < 8; i++){
-      m_Box.allPoints[i] = m_Box.allPointsBase[i];
-  }
-
-  //Set new position
-  m_position.translation(pos.X, pos.Y, pos.Z);
-
-
   //Set new position
   m_position.translation(pos.X, pos.Y, pos.Z);
   m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
@@ -54,7 +45,7 @@ void GameObject::update(float deltaTime)
   Matrix combined = m_position * m_rotation;
 
   for(unsigned int i = 0; i < 8; i++){
-      m_Box.allPoints[i] = combined * m_Box.allPoints[i];
+      m_Box.allPoints[i] = combined * m_Box.allPointsBase[i];
   }
 
   m_Sphere.Center = combined * m_Sphere.BaseCenter;
@@ -70,7 +61,7 @@ void GameObject::loadRessources(const char* obj, const char* vertexShader, const
 
 bool GameObject::alive()
 {
-  cout << name << " " << lifeSpan << endl;
+//  cout << name << " " << lifeSpan << endl;
   if(this->lifeSpan == 0)
     return true;
 
