@@ -32,7 +32,5 @@ void main(void)
 
     vec3 AmbientComponent = AmbientColor*DiffuseTexColor;
 
-    vec3 fragColor = DiffuseComponent + SpecularComponent + AmbientComponent;
-
     gl_FragColor = vec4(DiffuseComponent + SpecularComponent + AmbientComponent, 0.0);
 }

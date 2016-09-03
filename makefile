@@ -18,6 +18,7 @@ all:
 	Asteroid.cpp \
 	Projectile.cpp \
 	Planet.cpp \
+	Skybox.cpp \
 	Game.cpp \
 	CollisionDetection.cpp \
 	SoundManager.cpp \

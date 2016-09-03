@@ -245,8 +245,6 @@ bool Model::load( const char* Filename, const char* VertexShader, const char* Fr
         exit(3);
     }
 
-    sp.activate();
-
     return success;
 }
 
@@ -452,6 +450,8 @@ void Model::drawTriangles() const
 {
     CheckGLErrors();
 
+    sp.activate();
+
     GLuint lightPos = sp.getParameterID("LightPos");
     GLuint lightColor = sp.getParameterID("LightColor");
     GLuint diffID = sp.getParameterID("DiffColor");
@@ -521,6 +521,8 @@ void Model::drawTriangles() const
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    sp.deactivate();
 
 }
 

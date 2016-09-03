@@ -258,6 +258,8 @@ void DrawScene()
 
     //DrawGroundGrid();
 
+    game->drawSkybox();
+
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
@@ -310,6 +312,8 @@ void DrawScene()
             (*plist)[i]->draw();
         }
     }
+
+
 
 		cd->react();
 
