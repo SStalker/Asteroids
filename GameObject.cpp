@@ -70,6 +70,11 @@ void GameObject::loadRessources(const char* obj, const char* vertexShader, const
 
 bool GameObject::alive()
 {
+  if(health <= 0){
+    die();
+    return false;
+  }
+
   if(this->lifeSpan == 0)
     return true;
 
@@ -84,6 +89,11 @@ bool GameObject::alive()
 void GameObject::die()
 {
   this->dead = true;
+}
+
+void GameObject::takeDamage(float damageAmount)
+{
+  this->health -= damageAmount;
 }
 
 float GameObject::getHealth() const

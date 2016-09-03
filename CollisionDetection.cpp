@@ -28,15 +28,29 @@ void CollisionDetection::react()
       }
     }
   }
+
   // check Collision for spaceship <> asteroid
+  for(int j = 0; j < asteroids->size(); ++j)
+  {
+    if(check(spaceship, (*asteroids)[j]))
+    {
+      cout << "Spaceship collided with the Asteroid" << endl;
+      (*asteroids)[j]->die();
+      spaceship->takeDamage(25.f);
+      cout << "Left health of spaceship: " << spaceship->getHealth() << endl;
+      SoundManager::getInstance()->playExplosionSound();
+    }
+  }
+
+
   // check Collision for projectile <> asteroid
   for(int i = 0; i < projectiles->size(); ++i)
   {
-    for(int j = i+1; j < asteroids->size(); ++j)
+    for(int j = 0; j < asteroids->size(); ++j)
     {
       if(check((*projectiles)[i], (*asteroids)[j]))
       {
-        cout << "Projectile collieded with the Asteroid" << endl;
+        cout << "Projectile collided with the Asteroid" << endl;
         (*asteroids)[j]->die();
         (*projectiles)[i]->die();
         SoundManager::getInstance()->playExplosionSound();
@@ -44,16 +58,43 @@ void CollisionDetection::react()
     }
   }
   // check Collision for asteroid <> planet
+  for(int i = 0; i < asteroids->size(); ++i)
+  {
+    for(int j = 0; j < planets->size(); ++j)
+    {
+      if(check((*asteroids)[i], (*planets)[j]))
+      {
+        cout << "Asteroid collided with the Earth" << endl;
+        (*asteroids)[i]->die();
+        (*planets)[j]->takeDamage(5.f);
+        cout << "Left health of earth: " << (*planets)[i]->getHealth() << endl;
+      }
+    }
+  }
+
   // check Collision for spaceship <> planet
+  for(int i = 0; i < planets->size(); ++i)
+  {
+    if(check(spaceship, (*planets)[i]))
+    {
+      cout << "Spaceship collided with the Earth" << endl;
+      spaceship->die();
+      (*planets)[i]->takeDamage(50.f);
+      cout << "Left health of earth: " << (*planets)[i]->getHealth() << endl;
+    }
+  }
+
   // check Collision for projectile <> planet
   for(int i = 0; i < planets->size(); ++i)
   {
-    for(int j = i+1; j < projectiles->size(); ++j)
+    for(int j = 0; j < projectiles->size(); ++j)
     {
       if(check((*projectiles)[j], (*planets)[i]))
       {
         cout << "Projectile collieded with the Earth" << endl;
-
+        (*projectiles)[j]->die();
+        (*planets)[i]->takeDamage(5.f);
+        cout << "Left health of earth: " << (*planets)[i]->getHealth() << endl;
       }
     }
   }
@@ -85,7 +126,12 @@ bool CollisionDetection::check(Asteroid* a, Asteroid* b)
 // check Collision for spaceship <> asteroid
 bool CollisionDetection::check(Spaceship* a, Asteroid* b)
 {
+  BoundingSphere a1 = a->boundingSphere();
+  BoundingSphere b1 = b->boundingSphere();
+  const Vector diff = b1.Center-a1.Center;
+  const float R = a1.Radius+b1.Radius;
 
+  return R*R > diff.lengthSquared();
 }
 
 // check Collision for projectile <> asteroid
@@ -102,13 +148,23 @@ bool CollisionDetection::check(Projectile* a, Asteroid* b)
 // check Collision for asteroid <> planet
 bool CollisionDetection::check(Asteroid* a, Planet* b)
 {
+  BoundingSphere a1 = a->boundingSphere();
+  BoundingSphere b1 = b->boundingSphere();
+  const Vector diff = b1.Center-a1.Center;
+  const float R = a1.Radius+b1.Radius;
 
+  return R*R > diff.lengthSquared();
 }
 
 // check Collision for spaceship <> planet
 bool CollisionDetection::check(Spaceship* a, Planet* b)
 {
+  BoundingSphere a1 = a->boundingSphere();
+  BoundingSphere b1 = b->boundingSphere();
+  const Vector diff = b1.Center-a1.Center;
+  const float R = a1.Radius+b1.Radius;
 
+  return R*R > diff.lengthSquared();
 }
 
 // check Collision for projectile <> planet

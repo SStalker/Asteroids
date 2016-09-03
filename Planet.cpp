@@ -13,5 +13,19 @@ Planet::Planet(const Vector& pos, string name)
 
   if(!success)
     exit(4);
+}
 
+void Planet::update(float deltaTime)
+{
+  alive();
+
+  // Set position
+  m_position.translation(pos.X, pos.Y, pos.Z);
+
+  //Rotate earth
+  m_rotation.rotationYawPitchRoll(rot.X, rot.Y, rot.Z);
+
+  rot.X -= 0.004;
+  rot.Y -= 0.f;
+  rot.Z -= 0.f;
 }

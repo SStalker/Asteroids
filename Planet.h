@@ -10,6 +10,7 @@ private:
 public:
   Planet();
   Planet(const Vector& pos, string name);
+  void update(float deltaTime);
 };
 
 #endif

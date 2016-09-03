@@ -13,8 +13,8 @@
 
 #include "Vector.h"
 
-extern const unsigned int g_WindowWidth;
-extern const unsigned int g_WindowHeight;
+extern int g_WindowWidth;
+extern int g_WindowHeight;
 
 class Camera
 {

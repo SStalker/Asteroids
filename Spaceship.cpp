@@ -5,7 +5,7 @@ Spaceship::Spaceship()
 {
 	// Set handling parameters
     Acceleration = 10.f; // 500
-    TurnSpeed = 0.125f;
+    TurnSpeed = 0.325f;
     MaxSpeed = 20.f; // 5000
     MinSpeed = 2.f; // 500
     CurrentForwardSpeed = 2.f; // 500
@@ -15,6 +15,8 @@ Spaceship::Spaceship()
     Roll = 0.f;
     camShipBaseDistFoward = -6.f;
     camShipBaseDistUp = 3.f;
+
+    loadRessources("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl");
 }
 
 void Spaceship::update(float deltaTime)

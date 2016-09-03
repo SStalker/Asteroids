@@ -48,8 +48,8 @@ public:
 const char* g_ModelToLoad = "sponza/sponza.obj";
 
 // window x and y size
-const unsigned int g_WindowWidth=1024;
-const unsigned int g_WindowHeight=768;
+int g_WindowWidth=1024;
+int g_WindowHeight=768;
 
 int centerX = (float)g_WindowWidth / 2.0;
 int centerY = (float)g_WindowHeight / 2.0;
@@ -64,7 +64,7 @@ Game *game = Game::getInstance();
 CollisionDetection *cd;
 Camera g_Camera;
 Model g_Model;
-Spaceship sp;
+Spaceship *sp;
 
 int g_MouseButton = 0;
 int g_MouseState = 0;
@@ -79,6 +79,8 @@ void MouseCallback(int Button, int State, int x, int y);
 void MousePassiveMoveCallback(int x, int y);
 void KeyboardCallback( unsigned char key, int x, int y);
 void MouseMoveCallback(int x, int y);
+void Resize(int width, int height);
+void drawCrosshair();
 
 enum RenderMode
 {
@@ -110,16 +112,11 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutPassiveMotionFunc(MousePassiveMoveCallback);
     glutMotionFunc(MouseMoveCallback);
+		glutReshapeFunc(Resize);
 
-
-//    if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/ToonVertexShader.glsl", "assets/shader/ToonFragmentShader.glsl")){
-    if(!sp.load("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl")){
-        cout << "Could not load model";
-        exit(6);
-    }
-
-		sp.setPos(Vector(0.f,0.f,-20.f));
 		game->init();
+		sp = game->getSpaceship();
+		sp->setPos(Vector(0.f,0.f,-50.f));
 		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
 
 		SoundManager::getInstance()->init();
@@ -203,7 +200,7 @@ void mouseMove(int x, int y)
     g_forward = clamp((float)mouseY,-1.f,1.f);
     //cout << "x: " <<  << " Y: " <<  << endl;
 
-    sp.steer((-1.f)*g_forward,g_right);
+    sp->steer((-1.f)*g_forward,g_right);
 
     // Set the cursor back to center;
     glutWarpPointer( centerX, centerY );
@@ -212,7 +209,7 @@ void mouseMove(int x, int y)
 void MouseCallback(int Button, int State, int x, int y)
 {
     if(Button == GLUT_LEFT_BUTTON && State == GLUT_DOWN) {
-        sp.fire();
+        sp->fire();
     }
 }
 
@@ -230,18 +227,25 @@ void KeyboardCallback( unsigned char key, int x, int y)
 {
     int mod = glutGetModifiers();
     switch (key) {
-    case 'w': sp.ThrustInput(1.f);
+    case 'w': sp->ThrustInput(1.f);
         break;
-    case 's': sp.ThrustInput(-1.f);
+    case 's': sp->ThrustInput(-1.f);
         break;
     default:
         break;
     }
 }
 
+void Resize(int width, int height)
+{
+	glViewport(0, 0, (GLint)width, (GLint)height);
+  g_WindowWidth = width;
+  g_WindowHeight = height;
+}
 
 void DrawScene()
 {
+		//drawCrosshair();
     glLoadIdentity();
     float newtime = glutGet(GLUT_ELAPSED_TIME);
     float deltaTime = (newtime-oldTime)/1000.0;
@@ -249,17 +253,18 @@ void DrawScene()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    sp.setDeltaTime(deltaTime);
-    sp.update(deltaTime);
+    sp->setDeltaTime(deltaTime);
+    sp->update(deltaTime);
 
-    DrawGroundGrid();
+    //DrawGroundGrid();
 
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
-
-    sp.draw();
+    sp->draw();
+		sp->updateBounding();
+		sp->drawSphere();
 
     // Draw every asteroid
 		vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
@@ -284,7 +289,7 @@ void DrawScene()
         planet->update(deltaTime);
         planet->updateBounding();
         planet->draw();
-        //planet->drawSphere();
+        planet->drawSphere();
         //planet->drawBounding();
 
         //Debug::Drawmatrix(planet->getPosition());
@@ -308,7 +313,54 @@ void DrawScene()
 
 		cd->react();
 
+		if(sp->isDead())
+			exit(42);
+
     glutSwapBuffers();
     glutPostRedisplay();
+
+}
+
+void drawCrosshair()
+{
+    glPushMatrix();
+    glViewport(0, 0, g_WindowWidth, g_WindowHeight);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, g_WindowWidth, g_WindowHeight, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glColor3ub(240, 240, 240);//white
+    glLineWidth(2.0);
+
+    int crossHair[8] =
+    {
+    g_WindowWidth / 2 - 7, g_WindowHeight / 2, // horizontal line
+    g_WindowWidth / 2 + 7, g_WindowHeight / 2,
+
+    g_WindowWidth / 2, g_WindowHeight / 2 + 7, //vertical line
+    g_WindowWidth / 2, g_WindowHeight / 2 - 7
+    };
+
+    // activate vertext array state and assign pointer to vertext array data
+    glEnableClientState(GL_VERTEX_ARRAY);
+
+    //2 = number of coordinates per vertext we are doing 2d so I don't need the Z coordinate
+    // GL_INT = data type held in array
+    // crossHair = pointer to vertext data array
+
+
+    glVertexPointer(2, GL_INT, 0, crossHair);
+
+    //draw primitive GL_LINES starting at the first vertex, use 2 total vertices
+    glDrawArrays(GL_LINES, 0, 2); //draw horizontal line
+    //Same as above but start at second vertex
+    glDrawArrays(GL_LINES, 2, 2); //draw vertical line
+
+    // deactivate vertex array state after drawing
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glPopMatrix();
+
 
 }

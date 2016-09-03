@@ -37,6 +37,8 @@ public:
   bool alive();
   virtual void die();
 
+  virtual void takeDamage(float damageAmount);
+
   /* GETTER AND SETTER */
   float getHealth() const;
   void setHealth(float health);

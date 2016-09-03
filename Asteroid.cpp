@@ -20,6 +20,7 @@ Asteroid::Asteroid(const Vector& startPos, const Vector& startRot, const string 
 
 void Asteroid::update(float deltaTime)
 {
+    alive();
 
     // Set position
     m_position.translation(pos.X, pos.Y, pos.Z);
