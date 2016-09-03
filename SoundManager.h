@@ -18,6 +18,7 @@ public:
   void init();
   void playBackgroundMusic();
   void playShootingSound();
+  void playExplosionSound();
 };
 
 #endif

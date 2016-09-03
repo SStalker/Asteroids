@@ -7,7 +7,7 @@
 #include "Asteroid.h"
 #include "Spaceship.h"
 #include "Planet.h"
-
+#include "SoundManager.h"
 //using namespace std;
 
 class CollisionDetection{

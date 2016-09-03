@@ -25,12 +25,24 @@ void CollisionDetection::react()
         cout << "Collision between: " << (*asteroids)[i]->getName() << " and " << (*asteroids)[j]->getName() << endl;
         (*asteroids)[i]->die();
         (*asteroids)[j]->die();
-        //exit(42);
       }
     }
   }
   // check Collision for spaceship <> asteroid
   // check Collision for projectile <> asteroid
+  for(int i = 0; i < projectiles->size(); ++i)
+  {
+    for(int j = i+1; j < asteroids->size(); ++j)
+    {
+      if(check((*projectiles)[i], (*asteroids)[j]))
+      {
+        cout << "Projectile collieded with the Asteroid" << endl;
+        (*asteroids)[j]->die();
+        (*projectiles)[i]->die();
+        SoundManager::getInstance()->playExplosionSound();
+      }
+    }
+  }
   // check Collision for asteroid <> planet
   // check Collision for spaceship <> planet
   // check Collision for projectile <> planet
@@ -79,7 +91,12 @@ bool CollisionDetection::check(Spaceship* a, Asteroid* b)
 // check Collision for projectile <> asteroid
 bool CollisionDetection::check(Projectile* a, Asteroid* b)
 {
+  BoundingSphere a1 = a->boundingSphere();
+  BoundingSphere b1 = b->boundingSphere();
+  const Vector diff = b1.Center-a1.Center;
+  const float R = a1.Radius+b1.Radius;
 
+  return R*R > diff.lengthSquared();
 }
 
 // check Collision for asteroid <> planet
