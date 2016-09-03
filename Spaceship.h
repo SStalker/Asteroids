@@ -7,6 +7,7 @@
 #include "global.h"
 #include "GameObject.h"
 #include "Projectile.h"
+#include "SoundManager.h"
 
 class Spaceship : public GameObject{
 

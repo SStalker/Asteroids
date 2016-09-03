@@ -129,5 +129,6 @@ void Spaceship::fire()
   Projectile *p = new Projectile(pos, combined.forward(), 0.5);
   p->setName("Projectile" + to_string(projectiles.size()));
 
+  SoundManager::getInstance()->playShootingSound();
   Game::getInstance()->getProjectileList()->push_back(p);
 }

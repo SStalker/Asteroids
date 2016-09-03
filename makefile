@@ -1,5 +1,5 @@
 CC=g++
-OPTS =  -I"libs/irrKlang-64bit-1.5.0/include" -L"/usr/lib" libs/irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so -pthread
+OPTS =  -I"libs/irrKlang-64bit-1.5.0/include" -L"/usr/lib" libs/irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so  -pthread
 
 all:
 	$(CC) -g -lGL -lGLU -lglut -DGL_GLEXT_PROTOTYPES -std=c++11 \
@@ -20,4 +20,5 @@ all:
 	Planet.cpp \
 	Game.cpp \
 	CollisionDetection.cpp \
+	SoundManager.cpp \
 	-o main $(OPTS)

@@ -20,6 +20,7 @@
 #include "Spaceship.h"
 #include "Game.h"
 #include "CollisionDetection.h"
+#include "SoundManager.h"
 
 class Debug{
 public:
@@ -120,6 +121,9 @@ int main(int argc, char * argv[])
 		sp.setPos(Vector(0.f,0.f,-20.f));
 		game->init();
 		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
+
+		SoundManager::getInstance()->init();
+		SoundManager::getInstance()->playBackgroundMusic();
 
     glutMainLoop();
 }
