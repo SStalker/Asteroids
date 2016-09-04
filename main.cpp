@@ -70,6 +70,7 @@ const float fPlane = 1000.f;
 int g_MouseButton = 0;
 int g_MouseState = 0;
 
+int windowid;
 
 float g_forward = 0;
 float g_right = 0;
@@ -98,10 +99,10 @@ int main(int argc, char * argv[])
     glutInitWindowSize(g_WindowWidth, g_WindowHeight);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow("CG Praktikum");
-        // making the window full screen
-        glutFullScreen();
-        glutSetCursor(GLUT_CURSOR_NONE);
+    windowid = glutCreateWindow("CG Praktikum");
+    // making the window full screen
+    glutFullScreen();
+    glutSetCursor(GLUT_CURSOR_NONE);
 #ifdef WIN32
     glewInit();
 #endif
@@ -113,15 +114,15 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutPassiveMotionFunc(MousePassiveMoveCallback);
     glutMotionFunc(MouseMoveCallback);
-        glutReshapeFunc(Resize);
+    glutReshapeFunc(Resize);
 
-        game->init();
-        sp = game->getSpaceship();
-        sp->setPos(Vector(0.f,0.f,-220.f));
-        cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
+    game->init();
+    sp = game->getSpaceship();
+    sp->setPos(Vector(0.f,0.f,-220.f));
+    cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
 
-        SoundManager::getInstance()->init();
-        SoundManager::getInstance()->playBackgroundMusic();
+    SoundManager::getInstance()->init();
+    SoundManager::getInstance()->playBackgroundMusic();
 
     glutMainLoop();
 }
@@ -232,6 +233,11 @@ void KeyboardCallback( unsigned char key, int x, int y)
         break;
     case 's': sp->ThrustInput(-1.f);
         break;
+    case 27:
+        glutDestroyWindow ( windowid );
+        exit (0);
+        break;
+
     default:
         break;
     }
