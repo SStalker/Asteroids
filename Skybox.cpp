@@ -148,13 +148,12 @@ void Skybox::createVertices()
 
     glBindVertexArray(skyboxArrayBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 36, &vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 6 * 3, &vertices, GL_STATIC_DRAW);
 
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (char *)NULL + 0);
 
-    glDisableVertexAttribArray(0);
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -178,17 +177,14 @@ void Skybox::draw()
 {
     sp.activate();
 
-//    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_FALSE);
 
     //Setup shader
     GLuint textureID = sp.getParameterID("skybox");
 
-    //Übergeben der projection und view matrix ??
-
-
     glBindVertexArray(skyboxArrayBuffer);
-    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(0);
 
     //Setup Texture for Shader
     glActiveTexture(GL_TEXTURE0);
@@ -200,11 +196,10 @@ void Skybox::draw()
 
     glDisable(GL_TEXTURE_CUBE_MAP);
 
-    glDisableVertexAttribArray(0);
     glBindVertexArray(0);
 
     glDepthMask(GL_TRUE);
-//    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
     CheckGLErrorsSkybox();
     sp.deactivate();
 }

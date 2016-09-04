@@ -257,7 +257,6 @@ void DrawScene()
     sp->update(deltaTime);
 
     //DrawGroundGrid();
-    game->drawSkybox();
 
 
     GLfloat lpos[4];
@@ -322,6 +321,7 @@ void DrawScene()
         exit(42);
 
 
+    game->drawSkybox();
 
     glutSwapBuffers();
     glutPostRedisplay();
