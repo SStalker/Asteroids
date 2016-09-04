@@ -44,8 +44,8 @@ public:
 };
 
 // window x and y size
-int g_WindowWidth=1024;
-int g_WindowHeight=768;
+int g_WindowWidth= 1920;//1024;
+int g_WindowHeight= 1080;//768;
 
 int centerX = (float)g_WindowWidth / 2.0;
 int centerY = (float)g_WindowHeight / 2.0;
