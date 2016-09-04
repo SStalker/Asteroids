@@ -28,8 +28,8 @@ void Game::init()
   if(Game::getInstance() != nullptr)
   {
 
-    const float lower_bound = -100.f;
-    const float upper_bound = 100.f;
+    const float lower_bound = -200.f;
+    const float upper_bound = 200.f;
     std::uniform_real_distribution<float> unif(lower_bound, upper_bound);
 
     std::random_device rand_dev;          // Use random_device to get a random seed.

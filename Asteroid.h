@@ -2,7 +2,7 @@
 #define ASTEROID_H
 
 #include "GameObject.h"
-#define ASTEROID_SPEED 0.1
+#define ASTEROID_SPEED 0.05
 
 class Asteroid : public GameObject
 {
