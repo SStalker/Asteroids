@@ -40,13 +40,21 @@ void Spaceship::update(float deltaTime)
     //Rotate ship
     m_rotation.rotationYawPitchRoll(Yaw, Pitch, 0.f);
 
-    //Calculate new position
-    pos.X += CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
-    pos.Y += CurrentForwardSpeed * deltaTime * m_rotation.forward().Y;
-    pos.Z += CurrentForwardSpeed * deltaTime * m_rotation.forward().Z;
+    //Calculate position difference
+    Vector addUp;
+    addUp.X = CurrentForwardSpeed * deltaTime * m_rotation.forward().X;
+    addUp.Y = CurrentForwardSpeed * deltaTime * m_rotation.forward().Y;
+    addUp.Z = CurrentForwardSpeed * deltaTime * m_rotation.forward().Z;
 
-    //Set new position
-    m_position.translation(pos.X, pos.Y, pos.Z);
+    //If difference adding up with distance is smaller than half farplane distance then addUp the difference
+    if(pos.length() + addUp.length() < fPlane/2 && pos.length() - (addUp.length() * 2.f) < fPlane/2 ){
+        pos.X += addUp.X;
+        pos.Y += addUp.Y;
+        pos.Z += addUp.Z;
+
+        //Set new position
+        m_position.translation(pos.X, pos.Y, pos.Z);
+    }
 
     //Create camera rotration with
     Matrix camRot = m_rotation;
