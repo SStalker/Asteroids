@@ -116,7 +116,7 @@ int main(int argc, char * argv[])
 
 		game->init();
 		sp = game->getSpaceship();
-		sp->setPos(Vector(0.f,0.f,-50.f));
+		sp->setPos(Vector(0.f,0.f,-220.f));
 		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
 
 		SoundManager::getInstance()->init();

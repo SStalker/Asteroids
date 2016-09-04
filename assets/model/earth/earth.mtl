@@ -1,15 +1,13 @@
-# Blender MTL File: 'None'
+# Blender MTL File: 'earth.blend'
 # Material Count: 1
 
-newmtl 02___Default
-Ns 9.803922
-Ka 0.588200 0.588200 0.588200
-Kd 0.060117 0.183826 0.588200
-Ks 0.114935 0.114935 0.114935
+newmtl Material.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
-Ni 1.500000
+Ni 1.000000
 d 1.000000
-illum 2
-map_Kd 4096_earth.bmp
-map_Ka  4096_clouds.jpg
-map_d  4096_clouds.jpg
+illum 1
+map_Kd  4096_earth.bmp
