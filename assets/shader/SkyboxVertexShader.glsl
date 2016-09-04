@@ -1,4 +1,3 @@
-//#version 110
 uniform mat4 viewmatrix;
 uniform mat4 projmatrix;
 

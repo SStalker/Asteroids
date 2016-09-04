@@ -15,8 +15,7 @@ public:
 	Spaceship();
 
 	void update(float deltaTime);
-  void draw();
-  //bool load( const char* model, const char* VertexShader, const char* FragmentShader, const Vector& startPos);
+    void draw();
 	void steer( float fowardBackward, float leftRight);
 
 	/** Bound to the thrust axis */
@@ -33,9 +32,9 @@ private:
 	/** Dont if good idea.. save current deltaTime here */
 	float deltaTime;
 
-  /** Distance from camera to ship */
-  float camShipBaseDistFoward;
-  float camShipBaseDistUp;
+    /** Distance from camera to ship */
+    float camShipBaseDistFoward;
+    float camShipBaseDistUp;
 
 	/** How quickly forward speed changes */
 	float Acceleration;
@@ -49,7 +48,7 @@ private:
 	/** Min forward speed */
 	float MinSpeed;
 
-    /** */
+    /** Speed multiplier */
     float SpeedMult;
 
 	/** Current forward speed */
@@ -64,14 +63,14 @@ private:
 	/** Current roll speed */
 	float CurrentRollSpeed;
 
-  /** Pitch angle*/
-  float Pitch;
+    /** Pitch angle*/
+    float Pitch;
 
-  /** Yaw angle*/
-  float Yaw;
+    /** Yaw angle*/
+    float Yaw;
 
-  /** Roll angle*/
-  float Roll;
+    /** Roll angle*/
+    float Roll;
 
 	vector<Projectile*> projectiles;
 };
