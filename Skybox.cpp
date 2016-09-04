@@ -214,9 +214,6 @@ void Skybox::draw()
     //Recreate viewmatrix from camera and remove the translation part
     Matrix viewMatrix;
     viewMatrix.lookAt(g_Camera.getTarget(), g_Camera.getUp(), g_Camera.getPosition());
-    viewMatrix.m30 = 0;
-    viewMatrix.m31 = 0;
-    viewMatrix.m32 = 0;
 
     //Setup shader
     sp.activate();
