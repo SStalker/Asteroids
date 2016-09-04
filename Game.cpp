@@ -39,6 +39,7 @@ void Game::init()
     std::mt19937 rand_engine(rand_dev()); // mt19937 is a good pseudo-random number
                                           // generator.
 
+    //Create vector with texturenames for the skybox
     vector<string> SkyTex;
     SkyTex.push_back(string("assets/skybox/right.bmp"));
     SkyTex.push_back(string("assets/skybox/left.bmp"));
@@ -58,7 +59,6 @@ void Game::init()
     for (unsigned int i = 0; i < 15; i++) {
       Vector pos(unif(rand_engine),unif(rand_engine),unif(rand_engine));
       Vector rot(unif(rand_engine),unif(rand_engine),unif(rand_engine));
-      //cout << "As Pos: " << v << endl;
       asteroidList->push_back(new Asteroid(pos, rot, "Asteroid" + to_string(asteroidList->size())));
     }
   }

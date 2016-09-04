@@ -485,9 +485,6 @@ void Model::drawTriangles() const
     glClientActiveTexture(GL_TEXTURE0);
 
     for(unsigned int nextMaterial: mtlChange){
-        //disable old texture??
-//        glDisable(GL_TEXTURE_2D);
-
 
         //fetch the right material
         mtl = &m_pMaterials[mtlNumber];
@@ -570,18 +567,6 @@ void Model::drawBounding() const
     glEnd();
 }
 
-/*Projection Model::projectOnVector(const Vector& v)
-{
-  Projection p;
-  p.Min = numeric_limits<float>::max();
-  p.Max = -numeric_limits<float>::max();
-
-  for(auto vec : my_vertices){
-    float dot = v.dot(*vec);
-    p.Min = min(dot, p.Min);
-    p.Max = max(dot, p.Max);
-  }
-}*/
 
 vector<string> &Model::split(const string &s, char delim, vector<string> &elems)
 {
@@ -601,12 +586,7 @@ vector<string> Model::split(const string &s, char delim)
     return elems;
 }
 
-/*vector<Vector*> Model::getAllNormals()
-{
-  return my_normals;
-}*/
 
-// 2867/3783 2881/3798 2894/3812 2880/3797
 void Model::createFace(string line)
 {
     int status = 0;

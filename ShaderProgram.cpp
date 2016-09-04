@@ -95,7 +95,7 @@ bool ShaderProgram::loadFragmentShader(const char* FragmentShader){
 }
 
 bool ShaderProgram::compile(string* CompileErrors){
-	cout << "Compile Shaders" << endl;
+//	  cout << "Compile Shaders" << endl;
 	
     if(vLoaded && !compileShader(m_VertexShader, CompileErrors))
     {
