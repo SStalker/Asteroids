@@ -99,7 +99,7 @@ void Skybox::loadShader()
 
 void Skybox::createVertices()
 {
-    float vertices[] = {
+    GLfloat vertices[] = {
             -skyboxSize,  skyboxSize, -skyboxSize,
             -skyboxSize, -skyboxSize, -skyboxSize,
              skyboxSize, -skyboxSize, -skyboxSize,
@@ -144,8 +144,18 @@ void Skybox::createVertices()
         };
 
     glGenBuffers(1, &skyboxVertexBuffer);
+    glGenVertexArrays(1, &skyboxArrayBuffer);
+
+    glBindVertexArray(skyboxArrayBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, 36, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 36, &vertices, GL_STATIC_DRAW);
+
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -168,34 +178,34 @@ void Skybox::draw()
 {
     sp.activate();
 
-
+//    glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_FALSE);
-
-    //Setup Vertex Buffer
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVertexBuffer);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 36, 0);
-
-    //Setup Texture for Shader
-    glActiveTexture(GL_TEXTURE0);
-    glClientActiveTexture(GL_TEXTURE0);
 
     //Setup shader
     GLuint textureID = sp.getParameterID("skybox");
+
+    //Übergeben der projection und view matrix ??
+
+
+    glBindVertexArray(skyboxArrayBuffer);
+    glEnableVertexAttribArray(0);
+
+    //Setup Texture for Shader
+    glActiveTexture(GL_TEXTURE0);
     sp.setParameter(textureID, 0);
     apply();
-    CheckGLErrorsSkybox();
+//    glClientActiveTexture(GL_TEXTURE0);
 
-    //?????
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glDisable(GL_TEXTURE_CUBE_MAP);
-    glDisableClientState(GL_VERTEX_ARRAY);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+
     glDepthMask(GL_TRUE);
-
+//    glDepthFunc(GL_LESS);
+    CheckGLErrorsSkybox();
     sp.deactivate();
 }
 

@@ -27,6 +27,7 @@ private:
     const char* FragmentShader;
     float skyboxSize = 500.f;
     GLuint skyboxVertexBuffer;
+    GLuint skyboxArrayBuffer;
 
 public:
     Skybox();
