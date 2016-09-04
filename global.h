@@ -6,6 +6,10 @@
 
 extern Camera g_Camera;
 extern const Vector g_LightPos;
+extern const float fovy;
+extern const float aspectRatio;
+extern const float nPlane;
+extern const float fPlane;
 
 inline float clamp(float val, float min, float max)
 {

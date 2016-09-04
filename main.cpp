@@ -2,13 +2,13 @@
 #include <math.h>
 #include <unistd.h>
 #ifdef WIN32
-	#include <windows.h>
-	#include <GL/glew.h>
-	#include <GL/GLUT.h>
-	#include <GL/GL.h>
+    #include <windows.h>
+    #include <GL/glew.h>
+    #include <GL/GLUT.h>
+    #include <GL/GL.h>
 #else
-	#include <GL/gl.h>
-	#include <GL/glut.h>
+    #include <GL/gl.h>
+    #include <GL/glut.h>
 #endif
 
 #define GL_DEBUG
@@ -43,10 +43,6 @@ public:
     }
 };
 
-
-// Model that should be loaded
-const char* g_ModelToLoad = "sponza/sponza.obj";
-
 // window x and y size
 int g_WindowWidth=1024;
 int g_WindowHeight=768;
@@ -65,6 +61,11 @@ CollisionDetection *cd;
 Camera g_Camera;
 Model g_Model;
 Spaceship *sp;
+
+const float fovy = 65.f;
+const float aspectRatio = (float)((double)g_WindowWidth/(double)g_WindowHeight);
+const float nPlane = 0.045f;
+const float fPlane = 1000.f;
 
 int g_MouseButton = 0;
 int g_MouseState = 0;
@@ -98,11 +99,11 @@ int main(int argc, char * argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     glutCreateWindow("CG Praktikum");
-		// making the window full screen
-		glutFullScreen();
-		glutSetCursor(GLUT_CURSOR_NONE);
+        // making the window full screen
+        glutFullScreen();
+        glutSetCursor(GLUT_CURSOR_NONE);
 #ifdef WIN32
-	glewInit();
+    glewInit();
 #endif
 
     SetupDefaultGLSettings();
@@ -112,15 +113,15 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutPassiveMotionFunc(MousePassiveMoveCallback);
     glutMotionFunc(MouseMoveCallback);
-		glutReshapeFunc(Resize);
+        glutReshapeFunc(Resize);
 
-		game->init();
-		sp = game->getSpaceship();
-		sp->setPos(Vector(0.f,0.f,-220.f));
-		cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
+        game->init();
+        sp = game->getSpaceship();
+        sp->setPos(Vector(0.f,0.f,-220.f));
+        cd = new CollisionDetection(game->getProjectileList(), game->getAsteroidList(), game->getPlanetList(), game->getSpaceship());
 
-		SoundManager::getInstance()->init();
-		SoundManager::getInstance()->playBackgroundMusic();
+        SoundManager::getInstance()->init();
+        SoundManager::getInstance()->playBackgroundMusic();
 
     glutMainLoop();
 }
@@ -135,7 +136,7 @@ void SetupDefaultGLSettings()
     glCullFace(GL_BACK);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(65, (double)g_WindowWidth/(double)g_WindowHeight, 0.045f, 1000.0f);
+    gluPerspective(fovy, aspectRatio, nPlane, fPlane);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -200,7 +201,7 @@ void mouseMove(int x, int y)
     g_forward = clamp((float)mouseY,-1.f,1.f);
     //cout << "x: " <<  << " Y: " <<  << endl;
 
-    sp->steer((-1.f)*g_forward,g_right);
+    sp->steer(g_forward, g_right);
 
     // Set the cursor back to center;
     glutWarpPointer( centerX, centerY );
@@ -238,14 +239,14 @@ void KeyboardCallback( unsigned char key, int x, int y)
 
 void Resize(int width, int height)
 {
-	glViewport(0, 0, (GLint)width, (GLint)height);
+    glViewport(0, 0, (GLint)width, (GLint)height);
   g_WindowWidth = width;
   g_WindowHeight = height;
 }
 
 void DrawScene()
 {
-		//drawCrosshair();
+        //drawCrosshair();
     glLoadIdentity();
     float newtime = glutGet(GLUT_ELAPSED_TIME);
     float deltaTime = (newtime-oldTime)/1000.0;
@@ -319,7 +320,6 @@ void DrawScene()
 
     if(sp->isDead())
         exit(42);
-
 
     game->drawSkybox();
 

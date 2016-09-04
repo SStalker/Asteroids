@@ -192,7 +192,12 @@ bool ShaderProgram::hasLinked(GLuint program){
 		return false;
 	}
 
-	return true;
+    return true;
+}
+
+GLuint ShaderProgram::getId() const
+{
+    return m_ShaderProgram;
 }
 
 GLint ShaderProgram::getParameterID(const char* ParameterName) const{

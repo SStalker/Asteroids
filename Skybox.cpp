@@ -175,32 +175,41 @@ void Skybox::apply() const
 
 void Skybox::draw()
 {
-    sp.activate();
 
-    glDepthFunc(GL_LEQUAL);
+    //Recreate Viewmatrix and
+    Matrix viewMatrix;
+    viewMatrix.lookAt(g_Camera.getTarget(), g_Camera.getUp(), g_Camera.getPosition());
+    viewMatrix.m30 = 0;
+    viewMatrix.m31 = 0;
+    viewMatrix.m32 = 0;
+
     glDepthMask(GL_FALSE);
 
     //Setup shader
+    sp.activate();
     GLuint textureID = sp.getParameterID("skybox");
+    GLuint vmId = sp.getParameterID("viewmatrix");
+
+    sp.setParameter(vmId, viewMatrix);
 
     glBindVertexArray(skyboxArrayBuffer);
-//    glEnableVertexAttribArray(0);
 
     //Setup Texture for Shader
     glActiveTexture(GL_TEXTURE0);
     sp.setParameter(textureID, 0);
     apply();
-//    glClientActiveTexture(GL_TEXTURE0);
+    glClientActiveTexture(GL_TEXTURE0);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    //Disable
     glDisable(GL_TEXTURE_CUBE_MAP);
 
     glBindVertexArray(0);
 
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
-    CheckGLErrorsSkybox();
     sp.deactivate();
+    glDepthMask(GL_TRUE);
+    CheckGLErrorsSkybox();
 }
 
 

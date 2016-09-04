@@ -46,6 +46,7 @@ class ShaderProgram{
 // Custom functionss
         bool compileShader(GLuint shader, string *errorMessage);
 		bool hasLinked(GLuint program);
+        GLuint getId() const;
 
 	private:
 		GLuint m_VertexShader;

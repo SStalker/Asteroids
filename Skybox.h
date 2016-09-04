@@ -5,6 +5,7 @@
 #include <vector>
 #include "Texture.h"
 #include "ShaderProgram.h"
+#include "global.h"
 
 
 #define GL_DEBUG

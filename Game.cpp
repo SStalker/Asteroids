@@ -47,7 +47,7 @@ void Game::init()
     SkyTex.push_back(string("assets/skybox/back.bmp"));
     SkyTex.push_back(string("assets/skybox/front.bmp"));
 
-    skybox = new Skybox(SkyTex,"assets/shader/SkyboxVertexShader.glsl", "assets/shader/SkyboxFragmentShader.glsl", 500.f);
+    skybox = new Skybox(SkyTex,"assets/shader/SkyboxVertexShader.glsl", "assets/shader/SkyboxFragmentShader.glsl", fPlane*0.5f);
     ship = new Spaceship();
     projectileList = new vector<Projectile*>();
     asteroidList = new vector<Asteroid*>();
