@@ -257,31 +257,33 @@ void DrawScene()
     sp->update(deltaTime);
 
     //DrawGroundGrid();
+    game->drawSkybox();
+
 
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
     sp->draw();
-		sp->updateBounding();
-		sp->drawSphere();
+    sp->updateBounding();
+    sp->drawSphere();
 
     // Draw every asteroid
-		vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+    vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
 
-		for(int i = 0; i < alist->size(); i++)
-		{
-				if((*alist)[i]->isDead())
-				{
-					delete (*alist)[i];
-					alist->erase(alist->begin()+i);
-				}else{
-					(*alist)[i]->update(deltaTime);
-					(*alist)[i]->updateBounding();
-					(*alist)[i]->draw();
-					//(*alist)[i]->drawSphere();
-				}
-		}
+    for(int i = 0; i < alist->size(); i++)
+    {
+            if((*alist)[i]->isDead())
+            {
+                delete (*alist)[i];
+                alist->erase(alist->begin()+i);
+            }else{
+                (*alist)[i]->update(deltaTime);
+                (*alist)[i]->updateBounding();
+                (*alist)[i]->draw();
+                //(*alist)[i]->drawSphere();
+            }
+    }
 
     // Draw the earth
     for(auto& planet : *Game::getInstance()->getPlanetList())
@@ -311,10 +313,15 @@ void DrawScene()
         }
     }
 
-		cd->react();
 
-		if(sp->isDead())
-			exit(42);
+
+
+    cd->react();
+
+    if(sp->isDead())
+        exit(42);
+
+
 
     glutSwapBuffers();
     glutPostRedisplay();

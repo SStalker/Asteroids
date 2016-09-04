@@ -14,10 +14,12 @@ Game::Game()
 Game::~Game()
 {
 	delete ship;
+    delete skybox;
 
 	asteroidList->clear();
 	planetList->clear();
 	projectileList->clear();
+
 }
 
 /**
@@ -37,6 +39,15 @@ void Game::init()
     std::mt19937 rand_engine(rand_dev()); // mt19937 is a good pseudo-random number
                                           // generator.
 
+    vector<string> SkyTex;
+    SkyTex.push_back(string("assets/skybox/right.bmp"));
+    SkyTex.push_back(string("assets/skybox/left.bmp"));
+    SkyTex.push_back(string("assets/skybox/top.bmp"));
+    SkyTex.push_back(string("assets/skybox/bottom.bmp"));
+    SkyTex.push_back(string("assets/skybox/back.bmp"));
+    SkyTex.push_back(string("assets/skybox/front.bmp"));
+
+    skybox = new Skybox(SkyTex,"assets/shader/SkyboxVertexShader.glsl", "assets/shader/SkyboxFragmentShader.glsl", 1000.f);
     ship = new Spaceship();
     projectileList = new vector<Projectile*>();
     asteroidList = new vector<Asteroid*>();
@@ -51,6 +62,11 @@ void Game::init()
       asteroidList->push_back(new Asteroid(pos, rot, "Asteroid" + to_string(asteroidList->size())));
     }
   }
+}
+
+void Game::drawSkybox()
+{
+    skybox->draw();
 }
 
 Spaceship* Game::getSpaceship()

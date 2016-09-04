@@ -245,8 +245,6 @@ bool Model::load( const char* Filename, const char* VertexShader, const char* Fr
         exit(3);
     }
 
-    sp.activate();
-
     return success;
 }
 
@@ -262,7 +260,7 @@ bool Model::loadMtl(string filename, string path)
 
     toOpen.append(filename);
     toOpen.erase(toOpen.find_last_not_of(" \n\r\t")+1);
-    cout << "toOpen: " << toOpen << endl;
+//    cout << "toOpen: " << toOpen << endl;
     file.open(toOpen);
 
 //    cout << file.is_open() << endl;
@@ -287,32 +285,32 @@ bool Model::loadMtl(string filename, string path)
                     current = mtl.back();
                     current->setName(splitted[1]);
                 }else if(splitted[0].compare("Kd") == 0){
-                    cout << "Kd" << endl;
+//                    cout << "Kd" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
-                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
+//                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setDiffuseColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ks") == 0){
-                    cout << "Ks" << endl;
+//                    cout << "Ks" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
-                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
+//                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ka") == 0){
-                    cout << "Ka" << endl;
+//                    cout << "Ka" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
-                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
+//                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setAmbientColor(Color(color[0], color[1], color[2]));
                 }else if(splitted[0].compare("Ns") == 0){
-                    cout << "Ns" << endl;
+//                    cout << "Ns" << endl;
                     vector<float> color;
                     convertToFloat(color, splitted);
-                    //cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
+//                    cout << color[0] << " | " << color[1] << " | " << color[2] << endl;
                     current->setSpecularExponent(color[0]);
                 }else if(splitted[0].compare("map_Kd") == 0){
 //                    cout << "map_Kd" << endl;
-                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
+//                    cout << (path+splitted[1]).length() << " " << (path+splitted[1]).c_str() << endl;
                     current->setDiffuseTexture((path+splitted[1]).c_str());
                 }
             }
@@ -356,7 +354,7 @@ void Model::buildVerteciesForTexture()
     for(unsigned int i = 0; i<m_VertexCount; i+=3){
         //cout << "byCount: " << nextMat->byCount << " i: " << i << " counter: " << counter << " m_MaterialAtCount: " << m_MaterialAtCount << endl;
         if(m_MaterialAtCount > 1000){
-          cout << "m_MaterialAtCount: " << m_MaterialAtCount << endl;
+//          cout << "m_MaterialAtCount: " << m_MaterialAtCount << endl;
           exit(42);
         }
 
@@ -452,6 +450,8 @@ void Model::drawTriangles() const
 {
     CheckGLErrors();
 
+    sp.activate();
+
     GLuint lightPos = sp.getParameterID("LightPos");
     GLuint lightColor = sp.getParameterID("LightColor");
     GLuint diffID = sp.getParameterID("DiffColor");
@@ -521,6 +521,8 @@ void Model::drawTriangles() const
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    sp.deactivate();
 
 }
 

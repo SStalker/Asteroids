@@ -5,6 +5,7 @@
 #include "Projectile.h"
 #include "Spaceship.h"
 #include "Planet.h"
+#include "Skybox.h"
 
 #include <vector>
 #include <random>
@@ -27,10 +28,14 @@ private:
   /** List of planets **/
   vector<Planet*>* planetList;
 
+  /** Skybox*/
+  Skybox* skybox;
 public:
   static Game* getInstance();
 
   void init();
+  void drawSkybox();
+
 
   Spaceship* getSpaceship();
   vector<Projectile*>* getProjectileList();
