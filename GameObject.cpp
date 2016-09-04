@@ -11,7 +11,7 @@ GameObject::GameObject()
   this->rot = Vector(0.f,0.f,0.f);
 
   this->timeStamp = time(nullptr);
-  cout << timeStamp << endl;
+//  cout << timeStamp << endl;
 }
 
 GameObject::GameObject(const Vector& startPos) : GameObject()
