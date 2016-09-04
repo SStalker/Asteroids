@@ -193,7 +193,6 @@ void Skybox::draw()
 //    glClientActiveTexture(GL_TEXTURE0);
 
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
     glDisable(GL_TEXTURE_CUBE_MAP);
 
     glBindVertexArray(0);
