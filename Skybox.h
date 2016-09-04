@@ -7,18 +7,6 @@
 #include "ShaderProgram.h"
 #include "global.h"
 
-
-#define GL_DEBUG
-
-#ifdef GL_DEBUG
-#define CHECKGLSKY CheckGLErrorsSkybox();
-#else
-#define CHECKGLSKY ;
-#endif
-
-void CheckGLErrorsSkybox();
-
-
 class Skybox: public Texture
 {
 private:

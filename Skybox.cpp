@@ -211,15 +211,3 @@ void Skybox::draw()
     glDepthMask(GL_TRUE);
     CheckGLErrorsSkybox();
 }
-
-
-
-void CheckGLErrorsSkybox()
-{
-    GLenum Error = glGetError();
-    if(Error !=0)
-    {
-        std::cout << "Skybox: " << gluErrorString(Error) << std::endl;
-        throw std::exception();
-    }
-}
