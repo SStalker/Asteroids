@@ -17,16 +17,15 @@ private:
     float skyboxSize = 500.f;
     GLuint skyboxVertexBuffer;
     GLuint skyboxArrayBuffer;
-
-public:
-    Skybox();
-    Skybox(vector<string> textures, const char* vertexShader, const char* fragmentShader);
-    Skybox(vector<string> textures, const char* vertexShader, const char* fragmentShader, float size);
     bool loadSkybox();
     void loadShader();
     void createVertices();
-
     void apply() const;
+
+public:
+    Skybox(vector<string> textures, const char* vertexShader, const char* fragmentShader);
+    Skybox(vector<string> textures, const char* vertexShader, const char* fragmentShader, float size);
+
     void draw();
 };
 
