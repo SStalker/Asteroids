@@ -15,6 +15,11 @@ Spaceship::Spaceship()
     MaxSpeed = 20.f; // 5000
     MinSpeed = 2.f; // 500
     CurrentForwardSpeed = 2.f; // 500
+    Acceleration = 20.f;
+    TurnSpeed = 0.325f;// 0.125f;
+    MaxSpeed = 20.f;
+    MinSpeed = 2.f;
+    CurrentForwardSpeed = 2.f;
     SpeedMult = 1.f;
     Pitch = 0.f;
     Yaw = 0.f;
