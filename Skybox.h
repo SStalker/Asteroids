@@ -1,3 +1,9 @@
+/*
+ * Der Code dieser Klasse bassiert teilweise auf Ideen von
+ * http://learnopengl.com/#!Advanced-OpenGL/Cubemaps
+ * die an unsere Umgebung angepasst sind.
+ */
+
 #ifndef SKYBOX_H
 #define SKYBOX_H
 

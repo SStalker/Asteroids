@@ -128,12 +128,12 @@ int main(int argc, char * argv[])
     SoundManager::getInstance()->init();
     SoundManager::getInstance()->playBackgroundMusic();
 
-				if(!(font = dtx_open_font("fonts/nasalization/nasalization.ttf", 24))) {
-						fprintf(stderr, "failed to open font\n");
-						return 1;
-					}
+    if(!(font = dtx_open_font("fonts/nasalization/nasalization.ttf", 24))) {
+        fprintf(stderr, "failed to open font\n");
+        return 1;
+    }
 
-					dtx_use_font(font, 24);
+    dtx_use_font(font, 24);
 
     glutMainLoop();
 }
@@ -185,17 +185,16 @@ void DrawGroundGrid()
 
     glDisable( GL_LIGHTING);
     glBegin(GL_LINES);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        for( unsigned int i=0; i<GridSegments+1; i++)
-        {
-            float itpos=GridOrigin + GridStep*(float)i;
-            glVertex3f(itpos, 0, GridOrigin);
-            glVertex3f(itpos, 0, GridOrigin+GridSize);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    for( unsigned int i=0; i<GridSegments+1; i++)
+    {
+        float itpos=GridOrigin + GridStep*(float)i;
+        glVertex3f(itpos, 0, GridOrigin);
+        glVertex3f(itpos, 0, GridOrigin+GridSize);
 
-            glVertex3f(GridOrigin, 0, itpos);
-            glVertex3f(GridOrigin+GridSize, 0, itpos);
-
-        }
+        glVertex3f(GridOrigin, 0, itpos);
+        glVertex3f(GridOrigin+GridSize, 0, itpos);
+    }
     glEnd();
     glEnable( GL_LIGHTING);
 
@@ -263,139 +262,148 @@ void Resize(int width, int height)
 
 void DrawScene()
 {
-	  glLoadIdentity();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		float newtime = glutGet(GLUT_ELAPSED_TIME);
-		float deltaTime = (newtime-oldTime)/1000.0;
-		oldTime = newtime;
+    glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    float newtime = glutGet(GLUT_ELAPSED_TIME);
+    float deltaTime = (newtime-oldTime)/1000.0;
+    oldTime = newtime;
+
+    GLfloat lpos[4];
+    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
+    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+
+    //Update and draw Spaceship
+    sp->setDeltaTime(deltaTime);
+    sp->update(deltaTime);
+    sp->draw();
+    sp->updateBounding();
+
+    // Draw every asteroid
+    vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+    for(int i = 0; i < alist->size(); i++)
+    {
+        if((*alist)[i]->isDead())
+        {
+            delete (*alist)[i];
+            alist->erase(alist->begin()+i);
+        }else{
+            (*alist)[i]->update(deltaTime);
+            (*alist)[i]->updateBounding();
+            (*alist)[i]->draw();
+        }
+    }
+
+    // Draw the earth
+    for(auto& planet : *Game::getInstance()->getPlanetList())
+    {
+        planet->update(deltaTime);
+        planet->updateBounding();
+        planet->draw();
+    }
+
+    // Draw the projectiles
+    vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+
+    for(int i = 0; i < plist->size(); i++)
+    {
+        if((*plist)[i]->isDead())
+        {
+            delete (*plist)[i];
+            plist->erase(plist->begin()+i);
+        }else{
+            (*plist)[i]->update(deltaTime);
+            (*plist)[i]->updateBounding();
+            (*plist)[i]->draw();
+        }
+    }
+
+    // Check for collisions
+    cd->react();
+
+    // Draw the skybox
+    game->drawSkybox();
+
+    // Draw the 2d stuff here
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, g_WindowWidth,0, g_WindowHeight);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_LIGHTING);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    glPushMatrix();
+    glTranslatef(0, g_WindowHeight-50, 0);
+    glColor3f(1, 1, 1);
 
 
-		sp->setDeltaTime(deltaTime);
-		sp->update(deltaTime);
+    string leftAsteroids = "Left Asteroids: " + to_string(Game::getInstance()->getAsteroidList()->size());
+    dtx_string(leftAsteroids.c_str());
+    glPopMatrix();
 
 
-		GLfloat lpos[4];
-		lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
-		glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+    glPushMatrix();
+    glTranslatef(0, g_WindowHeight-75, 0);
 
-		sp->draw();
-		sp->updateBounding();
+    string leftHealthOfEarth = "Earth Health: " + to_string((int)Game::getInstance()->getPlanetList()->at(0)->getHealth());
+    dtx_string(leftHealthOfEarth.c_str());
+    glPopMatrix();
 
-		// Draw every asteroid
-		vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+    glPushMatrix();
+    glTranslatef(0, 50, 0);
 
-		for(int i = 0; i < alist->size(); i++)
-		{
-				if((*alist)[i]->isDead())
-				{
-						delete (*alist)[i];
-						alist->erase(alist->begin()+i);
-				}else{
-						(*alist)[i]->update(deltaTime);
-						(*alist)[i]->updateBounding();
-						(*alist)[i]->draw();
-				}
-		}
+    string leftHealthOfPlayer = "Players Health: " + to_string((int)sp->getHealth());
+    dtx_string(leftHealthOfPlayer.c_str());
+    glPopMatrix();
 
-		// Draw the earth
-		for(auto& planet : *Game::getInstance()->getPlanetList())
-		{
-				planet->update(deltaTime);
-				planet->updateBounding();
-				planet->draw();
-		}
+    glPushMatrix();
+    glTranslatef(g_WindowWidth-325, g_WindowHeight-50, 0);
 
-		// Draw the projectiles
-		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+    string creators = "Proudly made by\nLukas Hanningbrinck & \nRaphael Grewe";
+    dtx_string(creators.c_str());
+    glPopMatrix();
 
-		for(int i = 0; i < plist->size(); i++)
-		{
-				if((*plist)[i]->isDead())
-				{
-						delete (*plist)[i];
-						plist->erase(plist->begin()+i);
-				}else{
-						(*plist)[i]->update(deltaTime);
-						(*plist)[i]->updateBounding();
-						(*plist)[i]->draw();
-				}
-		}
+    if(sp->isDead() || Game::getInstance()->getPlanetList()->at(0)->isDead())
+    {
+        glPushMatrix();
+        dtx_prepare(font, 150);
+        dtx_use_font(font, 150);
+        glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
 
-		// Check for collisions
-		cd->react();
+        string lost = " You\n LOST \n;-)";
+        dtx_string(lost.c_str());
+        dtx_prepare(font, 24);
+        dtx_use_font(font, 24);
+        glPopMatrix();
+    }else if(Game::getInstance()->getAsteroidList()->size() <= 0 ){
+        glPushMatrix();
+        dtx_prepare(font, 150);
+        dtx_use_font(font, 150);
+        glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
 
-		// Draw the skybox
-		game->drawSkybox();
+        string lost = " You\n WIN \n :-D";
+        dtx_string(lost.c_str());
+        dtx_prepare(font, 24);
+        dtx_use_font(font, 24);
+        glPopMatrix();
+    }
 
-		// Draw the 2d stuff here
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		gluOrtho2D(0, g_WindowWidth,0, g_WindowHeight);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_LIGHTING);
-		glClear(GL_DEPTH_BUFFER_BIT);
+    drawCrosshair();
+    //undo matrix changes
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_LIGHTING);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-	// Hud schriften hier!!!!
-	glPushMatrix();
-		glTranslatef(0, g_WindowHeight-50, 0);
-		glColor3f(1, 1, 1);
-
-		string leftAsteroids = "Left Asteroids: " + to_string(Game::getInstance()->getAsteroidList()->size());
-		dtx_string(leftAsteroids.c_str());
-		glPopMatrix();
-
-
-		glPushMatrix();
-		glTranslatef(0, g_WindowHeight-75, 0);
-
-		string leftHealthOfEarth = "Earth Health: " + to_string((int)Game::getInstance()->getPlanetList()->at(0)->getHealth());
-		dtx_string(leftHealthOfEarth.c_str());
-		glPopMatrix();
-
-		glPushMatrix();
-		glTranslatef(0, 50, 0);
-
-		string leftHealthOfPlayer = "Players Health: " + to_string((int)sp->getHealth());
-		dtx_string(leftHealthOfPlayer.c_str());
-		glPopMatrix();
-
-		glPushMatrix();
-		glTranslatef(g_WindowWidth-325, g_WindowHeight-50, 0);
-
-		string creators = "Proudly made by\nLukas Hanningbrinck & \nRaphael Grewe";
-		dtx_string(creators.c_str());
-		glPopMatrix();
-
-		if(sp->isDead() || Game::getInstance()->getPlanetList()->at(0)->isDead())
-		{
-			glPushMatrix();
-			dtx_prepare(font, 150);
-			dtx_use_font(font, 150);
-			glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
-
-			string lost = " You\n LOST \n;-)";
-			dtx_string(lost.c_str());
-			dtx_prepare(font, 24);
-			dtx_use_font(font, 24);
-			glPopMatrix();
-		}
-
-		drawCrosshair();
-
-		glPopMatrix();
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_LIGHTING);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		glutSwapBuffers();
-	  glutPostRedisplay();
+    //Swap buffers
+    glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 void drawCrosshair()
