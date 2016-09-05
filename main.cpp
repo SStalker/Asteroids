@@ -366,7 +366,7 @@ void DrawScene()
 		glPushMatrix();
 		glTranslatef(g_WindowWidth-325, g_WindowHeight-50, 0);
 
-		string creators = "Proudly made by\nLukas Hanningbrinck & \nRaphael Grewe";
+		string creators = "Proudly made by\nLukas Hannigbrinck & \nRaphael Grewe";
 		dtx_string(creators.c_str());
 		glPopMatrix();
 
