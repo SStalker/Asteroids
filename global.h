@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 
+//Globale variablen
 extern Camera g_Camera;
 extern const Vector g_LightPos;
 extern const float fovy;
