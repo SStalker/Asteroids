@@ -268,18 +268,21 @@ void DrawScene()
     float deltaTime = (newtime-oldTime)/1000.0;
     oldTime = newtime;
 
+
+    sp->setDeltaTime(deltaTime);
+    sp->update(deltaTime);
+
+
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
     glLightfv(GL_LIGHT0, GL_POSITION, lpos);
 
-    //Update and draw Spaceship
-    sp->setDeltaTime(deltaTime);
-    sp->update(deltaTime);
     sp->draw();
     sp->updateBounding();
 
     // Draw every asteroid
     vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+
     for(int i = 0; i < alist->size(); i++)
     {
         if((*alist)[i]->isDead())
@@ -335,10 +338,9 @@ void DrawScene()
     glDisable(GL_LIGHTING);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glPushMatrix();
+	glPushMatrix();
     glTranslatef(0, g_WindowHeight-50, 0);
     glColor3f(1, 1, 1);
-
 
     string leftAsteroids = "Left Asteroids: " + to_string(Game::getInstance()->getAsteroidList()->size());
     dtx_string(leftAsteroids.c_str());
@@ -362,7 +364,7 @@ void DrawScene()
     glPushMatrix();
     glTranslatef(g_WindowWidth-325, g_WindowHeight-50, 0);
 
-    string creators = "Proudly made by\nLukas Hanningbrinck & \nRaphael Grewe";
+    string creators = "Proudly made by\nLukas Hannigbrinck & \nRaphael Grewe";
     dtx_string(creators.c_str());
     glPopMatrix();
 
@@ -378,13 +380,13 @@ void DrawScene()
         dtx_prepare(font, 24);
         dtx_use_font(font, 24);
         glPopMatrix();
-    }else if(Game::getInstance()->getAsteroidList()->size() <= 0 ){
+    }else if(Game::getInstance()->getAsteroidList()->size() <= 0){
         glPushMatrix();
         dtx_prepare(font, 150);
         dtx_use_font(font, 150);
         glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
 
-        string lost = " You\n WIN \n :-D";
+        string lost = " You\n Win \n :-D";
         dtx_string(lost.c_str());
         dtx_prepare(font, 24);
         dtx_use_font(font, 24);
@@ -392,7 +394,7 @@ void DrawScene()
     }
 
     drawCrosshair();
-    //undo matrix changes
+
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -401,9 +403,9 @@ void DrawScene()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    //Swap buffers
     glutSwapBuffers();
     glutPostRedisplay();
+
 }
 
 void drawCrosshair()
