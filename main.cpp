@@ -57,11 +57,9 @@ const Vector g_LightPos = Vector( 0,8,0);
 
 float oldTime = 0;
 
-
 Game *game = Game::getInstance();
 CollisionDetection *cd;
 Camera g_Camera;
-Model g_Model;
 Spaceship *sp;
 
 const float fovy = 65.f;
@@ -264,14 +262,13 @@ void DrawScene()
 {
     glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    float newtime = glutGet(GLUT_ELAPSED_TIME);
+
+		float newtime = glutGet(GLUT_ELAPSED_TIME);
     float deltaTime = (newtime-oldTime)/1000.0;
     oldTime = newtime;
 
-
     sp->setDeltaTime(deltaTime);
     sp->update(deltaTime);
-
 
     GLfloat lpos[4];
     lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
@@ -380,20 +377,7 @@ void DrawScene()
         dtx_prepare(font, 24);
         dtx_use_font(font, 24);
         glPopMatrix();
-    }else if(Game::getInstance()->getAsteroidList()->size() <= 0){
-        glPushMatrix();
-        dtx_prepare(font, 150);
-        dtx_use_font(font, 150);
-        glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
-
-        string lost = " You\n Win \n :-D";
-        dtx_string(lost.c_str());
-        dtx_prepare(font, 24);
-        dtx_use_font(font, 24);
-        glPopMatrix();
     }
-
-    drawCrosshair();
 
 		if(!sp->isDead() &&
 			!Game::getInstance()->getPlanetList()->at(0)->isDead() &&
@@ -426,12 +410,13 @@ void DrawScene()
 
 }
 
+// Crosshair source http://guidedhacking.com/showthread.php?6588-OpenGL-Draw-a-crosshair
 void drawCrosshair()
 {
     glPushMatrix();
     glLoadIdentity();
 
-    glColor3ub(240, 240, 240);//white
+    glColor3ub(240, 240, 240);
     glLineWidth(2.0);
 
     int crossHair[8] =
@@ -449,9 +434,9 @@ void drawCrosshair()
     glVertexPointer(2, GL_INT, 0, crossHair);
 
     //draw primitive GL_LINES starting at the first vertex, use 2 total vertices
-    glDrawArrays(GL_LINES, 0, 2); //draw horizontal line
+    glDrawArrays(GL_LINES, 0, 2);
     //Same as above but start at second vertex
-    glDrawArrays(GL_LINES, 2, 2); //draw vertical line
+    glDrawArrays(GL_LINES, 2, 2);
 
     // deactivate vertex array state after drawing
     glDisableClientState(GL_VERTEX_ARRAY);

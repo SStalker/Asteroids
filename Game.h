@@ -16,27 +16,28 @@ private:
   Game();
   ~Game();
 
-  /** Fighter instance **/
+  // Spaceship
   Spaceship* ship;
 
-  /** List of bullets **/
+  // List of projectiles
   vector<Projectile*>* projectileList;
 
-  /** List of asteroids **/
+  // List of asteroids
   vector<Asteroid*>* asteroidList;
 
-  /** List of planets **/
+  // List of planets
   vector<Planet*>* planetList;
 
-  /** Skybox*/
+  // Skybox
   Skybox* skybox;
+
 public:
   static Game* getInstance();
 
   void init();
   void drawSkybox();
 
-
+  // Getter and Setter
   Spaceship* getSpaceship();
   vector<Projectile*>* getProjectileList();
   vector<Asteroid*>* getAsteroidList();
