@@ -84,19 +84,6 @@ public:
     float Radius;
 };
 
-/*class Projection{
-public:
-    float Min;
-    float Max;
-
-    float overlap(Projection& p){
-      return 0.5f*( this->size() + p.size() - max(Max, p.Max) + min(Min, p.Min) );
-    }
-
-    float size(){
-        return Max-Min;
-    }
-};*/
 
 class Model
 {

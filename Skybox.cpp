@@ -1,9 +1,13 @@
 #include "Skybox.h"
 
-Skybox::Skybox()
-{
-
-}
+/**
+ * Constructor with texturename arrays and shader names
+ *
+ * @brief Skybox::Skybox
+ * @param textures
+ * @param vertexShader
+ * @param fragmentShader
+ */
 
 Skybox::Skybox(vector<string> textures , const char* vertexShader, const char* fragmentShader)
 {
@@ -17,6 +21,16 @@ Skybox::Skybox(vector<string> textures , const char* vertexShader, const char* f
     createVertices();
     loadSkybox();
 }
+
+/**
+ * Constructor with texturename arrays, shader names and the cubesize
+ *
+ * @brief Skybox::Skybox
+ * @param textures
+ * @param vertexShader
+ * @param fragmentShader
+ * @param size                      halfe farplane distance.
+ */
 
 Skybox::Skybox(vector<string> textures, const char *vertexShader, const char *fragmentShader, float size)
 {
@@ -34,9 +48,7 @@ Skybox::Skybox(vector<string> textures, const char *vertexShader, const char *fr
 }
 
 /**
- * Idee von http://learnopengl.com/#!Advanced-OpenGL/Cubemaps an unsere Umgebung angepasst
- *
- * Läd die texturen für eine Cubemap und erstellt diese im speicher.
+ * Function to load the skybox textures into a cubemap texture and store it.
  *
  * @brief Skybox::loadSkybox
  * @return bool if skybox is succesfully created
@@ -44,16 +56,18 @@ Skybox::Skybox(vector<string> textures, const char *vertexShader, const char *fr
 
 bool Skybox::loadSkybox()
 {
+    //image information
     unsigned int width, height;
     unsigned char* data;
 
+    //Bind a cubemap texture
     glGenTextures(1, &m_TextureID);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
 
+    //Read the right images to the right texture positions
     for(unsigned int i = 0; i < Textures.size(); i++){
         data = LoadBMP(Textures[i].c_str(), width, height);
-
         if(data==NULL)
             exit(6);
 
@@ -66,10 +80,12 @@ bool Skybox::loadSkybox()
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+    //Bind the texture
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     delete[] data;
 
+    //load the needed shader
     loadShader();
     return true;
 }
@@ -84,21 +100,30 @@ bool Skybox::loadSkybox()
 
 void Skybox::loadShader()
 {
+    //Load the shader and continue onj success
     if(!sp.load(VertexShader, FragmentShader)){
         cout << "V or F" << endl;
         exit(2);
     }
 
+    //Compile the shader, if there is an error print it
     string* ErrorMsg = new string();
-
     if(!sp.compile(ErrorMsg)){
         cout << *ErrorMsg << endl;
         exit(3);
     }
 }
 
+
+/**
+ * Create vertices for the skybox and bind the buffer
+ *
+ * @brief Skybox::createVertices
+ */
 void Skybox::createVertices()
 {
+
+    //Setup skybox vertices
     GLfloat vertices[] = {
             -skyboxSize,  skyboxSize, -skyboxSize,
             -skyboxSize, -skyboxSize, -skyboxSize,
@@ -143,6 +168,8 @@ void Skybox::createVertices()
              skyboxSize, -skyboxSize,  skyboxSize
         };
 
+
+    //Generate buffer and vertex array pointer and fill them with information
     glGenBuffers(1, &skyboxVertexBuffer);
     glGenVertexArrays(1, &skyboxArrayBuffer);
 
@@ -158,6 +185,13 @@ void Skybox::createVertices()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+
+/**
+ * Bind texture for the skymap
+ *
+ * @brief Skybox::apply
+ */
+
 void Skybox::apply() const
 {
     if(m_TextureID==0)
@@ -167,8 +201,9 @@ void Skybox::apply() const
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
 }
 
+
 /**
- * ToDo: Überarbeiten
+ * Function to draw the skybox with a shader
  *
  * @brief Skybox::draw
  */
@@ -176,50 +211,30 @@ void Skybox::apply() const
 void Skybox::draw()
 {
 
-    //Recreate Viewmatrix and
+    //Recreate viewmatrix from camera and remove the translation part
     Matrix viewMatrix;
     viewMatrix.lookAt(g_Camera.getTarget(), g_Camera.getUp(), g_Camera.getPosition());
-    viewMatrix.m30 = 0;
-    viewMatrix.m31 = 0;
-    viewMatrix.m32 = 0;
-
-    glDepthMask(GL_FALSE);
 
     //Setup shader
     sp.activate();
     GLuint textureID = sp.getParameterID("skybox");
     GLuint vmId = sp.getParameterID("viewmatrix");
-
     sp.setParameter(vmId, viewMatrix);
+    sp.setParameter(textureID, 0);
 
+    //Bind arraybuffer
     glBindVertexArray(skyboxArrayBuffer);
 
     //Setup Texture for Shader
     glActiveTexture(GL_TEXTURE0);
-    sp.setParameter(textureID, 0);
-    apply();
     glClientActiveTexture(GL_TEXTURE0);
+    apply();
 
+    //Draw Skybox
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     //Disable
     glDisable(GL_TEXTURE_CUBE_MAP);
-
     glBindVertexArray(0);
-
     sp.deactivate();
-    glDepthMask(GL_TRUE);
-    CheckGLErrorsSkybox();
-}
-
-
-
-void CheckGLErrorsSkybox()
-{
-    GLenum Error = glGetError();
-    if(Error !=0)
-    {
-        std::cout << "Skybox: " << gluErrorString(Error) << std::endl;
-        throw std::exception();
-    }
 }
