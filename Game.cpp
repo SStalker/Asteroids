@@ -14,7 +14,7 @@ Game::Game()
 Game::~Game()
 {
 	delete ship;
-    delete skybox;
+  delete skybox;
 
 	asteroidList->clear();
 	planetList->clear();
@@ -34,10 +34,9 @@ void Game::init()
     const float upper_bound = 200.f;
     std::uniform_real_distribution<float> unif(lower_bound, upper_bound);
 
-    std::random_device rand_dev;          // Use random_device to get a random seed.
+    std::random_device rand_dev;
 
-    std::mt19937 rand_engine(rand_dev()); // mt19937 is a good pseudo-random number
-                                          // generator.
+    std::mt19937 rand_engine(rand_dev());
 
     //Create vector with texturenames for the skybox
     vector<string> SkyTex;
@@ -67,7 +66,7 @@ void Game::init()
 
 void Game::drawSkybox()
 {
-    skybox->draw();
+  skybox->draw();
 }
 
 Spaceship* Game::getSpaceship()

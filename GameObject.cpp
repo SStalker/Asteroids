@@ -11,7 +11,6 @@ GameObject::GameObject()
   this->rot = Vector(0.f,0.f,0.f);
 
   this->timeStamp = time(nullptr);
-//  cout << timeStamp << endl;
 }
 
 GameObject::GameObject(const Vector& startPos) : GameObject()
@@ -31,7 +30,6 @@ void GameObject::draw()
   glPushMatrix();
       glMultMatrixf(m_position*m_rotation);
       drawTriangles();
-//      drawBounding();
   glPopMatrix();
 }
 

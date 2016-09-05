@@ -31,7 +31,7 @@ void Asteroid::update(float deltaTime)
     // Change the position in direction to earth
     pos = pos - pos * 0.01 * ASTEROID_SPEED;
 
-
+    // Change rotation
     rot.X -= 0.001;
     rot.Y -= 0.002;
     rot.Z -= 0.004;
