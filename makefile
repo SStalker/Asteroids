@@ -1,8 +1,11 @@
 CC=g++
-OPTS =  -I"libs/irrKlang-64bit-1.5.0/include" -L"/usr/lib" libs/irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so  -pthread
+OPTS = \
+-I"libs/irrKlang-64bit-1.5.0/include" -L"/usr/lib" libs/irrKlang-64bit-1.5.0/bin/linux-gcc-64/libIrrKlang.so  \
+-I"libs/libdrawtext/src" -L"libs/libdrawtext" libs/libdrawtext/libdrawtext.so libs/libdrawtext/libdrawtext.so.0 \
+-pthread
 
 all:
-	$(CC) -g -lGL -lGLU -lglut -DGL_GLEXT_PROTOTYPES -std=c++11 \
+	$(CC) -g -lGL -lGLU -lGLEW -lglut -Wl,-rpath=libs/libdrawtext -ldrawtext -DGL_GLEXT_PROTOTYPES -std=c++11 \
 	main.cpp \
 	Vector.cpp \
 	Color.cpp \
