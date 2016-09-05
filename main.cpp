@@ -384,6 +384,22 @@ void DrawScene()
 			glPopMatrix();
 		}
 
+		if(!sp->isDead() &&
+			!Game::getInstance()->getPlanetList()->at(0)->isDead() &&
+			Game::getInstance()->getAsteroidList()->empty())
+		{
+			glPushMatrix();
+			dtx_prepare(font, 150);
+			dtx_use_font(font, 150);
+			glTranslatef(g_WindowWidth/2-250, g_WindowHeight/2+250, 0);
+
+			string lost = " Good job!!\nYou WIN \n:-)";
+			dtx_string(lost.c_str());
+			dtx_prepare(font, 24);
+			dtx_use_font(font, 24);
+			glPopMatrix();
+		}
+
 		drawCrosshair();
 
 		glPopMatrix();

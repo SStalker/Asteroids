@@ -67,7 +67,7 @@ void CollisionDetection::react()
       {
         cout << "Asteroid collided with the Earth" << endl;
         (*asteroids)[i]->die();
-        (*planets)[j]->takeDamage(5.f);
+        (*planets)[j]->takeDamage(10.f);
         SoundManager::getInstance()->playExplosionSound();
         cout << "Left health of earth: " << (*planets)[j]->getHealth() << endl;
       }
@@ -80,7 +80,7 @@ void CollisionDetection::react()
     if(check(spaceship, (*planets)[i]))
     {
       cout << "Spaceship collided with the Earth" << endl;
-      //spaceship->die();
+      spaceship->die();
       (*planets)[i]->takeDamage(50.f);
       cout << "Left health of earth: " << (*planets)[i]->getHealth() << endl;
     }

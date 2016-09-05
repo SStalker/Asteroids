@@ -11,7 +11,7 @@ Spaceship::Spaceship()
 {
 	// Set handling parameters
     Acceleration = 20.f; // 500
-    TurnSpeed = 0.125f;// 0.325f;
+    TurnSpeed = 0.175f;// 0.325f;
     MaxSpeed = 20.f; // 5000
     MinSpeed = 2.f; // 500
     CurrentForwardSpeed = 2.f; // 500
@@ -22,7 +22,7 @@ Spaceship::Spaceship()
     camShipBaseDistFoward = -6.f;
     camShipBaseDistUp = 3.f;
 
-    loadRessources("assets/model/SpaceShip.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl");
+    loadRessources("assets/model/ship/starcruiser/starcruiser.obj", "assets/shader/PhongVertexShader.glsl", "assets/shader/PhongFragmentShader.glsl");
 }
 
 

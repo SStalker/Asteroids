@@ -57,7 +57,7 @@ void Game::init()
 
     planetList->push_back(new Planet(Vector(0.f,0.f,0.f), "Erde"));
 
-    for (unsigned int i = 0; i < 15; i++) {
+    for (unsigned int i = 0; i < 25; i++) {
       Vector pos(unif(rand_engine),unif(rand_engine),unif(rand_engine));
       Vector rot(unif(rand_engine),unif(rand_engine),unif(rand_engine));
       asteroidList->push_back(new Asteroid(pos, rot, "Asteroid" + to_string(asteroidList->size())));
