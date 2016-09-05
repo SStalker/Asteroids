@@ -59,6 +59,7 @@ float oldTime = 0;
 
 Game *game = Game::getInstance();
 CollisionDetection *cd;
+Camera g_Camera;
 Spaceship *sp;
 
 const float fovy = 65.f;
