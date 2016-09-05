@@ -22,4 +22,4 @@ all:
 	Game.cpp \
 	CollisionDetection.cpp \
 	SoundManager.cpp \
-	-o main $(OPTS)
+	-o Asteroids $(OPTS)
