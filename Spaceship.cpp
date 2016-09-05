@@ -10,13 +10,8 @@
 Spaceship::Spaceship()
 {
 	// Set handling parameters
-    Acceleration = 20.f; // 500
-    TurnSpeed = 0.175f;// 0.325f;
-    MaxSpeed = 20.f; // 5000
-    MinSpeed = 2.f; // 500
-    CurrentForwardSpeed = 2.f; // 500
     Acceleration = 20.f;
-    TurnSpeed = 0.325f;// 0.125f;
+    TurnSpeed = 0.25f;// 0.325f;
     MaxSpeed = 20.f;
     MinSpeed = 2.f;
     CurrentForwardSpeed = 2.f;
