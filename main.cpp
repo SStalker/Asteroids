@@ -22,6 +22,8 @@
 #include "CollisionDetection.h"
 #include "SoundManager.h"
 
+#include "drawtext.h"
+
 class Debug{
 public:
     static void drawLine(const Vector a, const Vector b, const Color c){
@@ -92,6 +94,8 @@ enum RenderMode
 
 RenderMode g_RenderMode = RENDERMODE_LINES;
 
+struct dtx_font *font;
+
 int main(int argc, char * argv[])
 {
     // initialize the glut system and create a window
@@ -113,7 +117,7 @@ int main(int argc, char * argv[])
     glutKeyboardFunc(KeyboardCallback);
     glutPassiveMotionFunc(MousePassiveMoveCallback);
     glutMotionFunc(MouseMoveCallback);
-        glutReshapeFunc(Resize);
+    glutReshapeFunc(Resize);
 
         game->init();
         sp = game->getSpaceship();
@@ -122,6 +126,13 @@ int main(int argc, char * argv[])
 
         SoundManager::getInstance()->init();
         SoundManager::getInstance()->playBackgroundMusic();
+
+				if(!(font = dtx_open_font("fonts/nasalization/nasalization.ttf", 24))) {
+						fprintf(stderr, "failed to open font\n");
+						return 1;
+					}
+
+					dtx_use_font(font, 24);
 
     glutMainLoop();
 }
@@ -239,103 +250,151 @@ void KeyboardCallback( unsigned char key, int x, int y)
 
 void Resize(int width, int height)
 {
-    glViewport(0, 0, (GLint)width, (GLint)height);
-  g_WindowWidth = width;
-  g_WindowHeight = height;
+		glViewport(0, 0, (GLint)width, (GLint)height);
+		g_WindowWidth = width;
+		g_WindowHeight = height;
 }
 
 void DrawScene()
 {
-        //drawCrosshair();
-    glLoadIdentity();
-    float newtime = glutGet(GLUT_ELAPSED_TIME);
-    float deltaTime = (newtime-oldTime)/1000.0;
-    oldTime = newtime;
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    sp->setDeltaTime(deltaTime);
-    sp->update(deltaTime);
-
-    //DrawGroundGrid();
+	  glLoadIdentity();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		float newtime = glutGet(GLUT_ELAPSED_TIME);
+		float deltaTime = (newtime-oldTime)/1000.0;
+		oldTime = newtime;
 
 
-    GLfloat lpos[4];
-    lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
-    glLightfv(GL_LIGHT0, GL_POSITION, lpos);
-
-    sp->draw();
-    sp->updateBounding();
-    sp->drawSphere();
-
-    // Draw every asteroid
-    vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
-
-    for(int i = 0; i < alist->size(); i++)
-    {
-            if((*alist)[i]->isDead())
-            {
-                delete (*alist)[i];
-                alist->erase(alist->begin()+i);
-            }else{
-                (*alist)[i]->update(deltaTime);
-                (*alist)[i]->updateBounding();
-                (*alist)[i]->draw();
-                //(*alist)[i]->drawSphere();
-            }
-    }
-
-    // Draw the earth
-    for(auto& planet : *Game::getInstance()->getPlanetList())
-    {
-        planet->update(deltaTime);
-        planet->updateBounding();
-        planet->draw();
-        planet->drawSphere();
-        //planet->drawBounding();
-
-        //Debug::Drawmatrix(planet->getPosition());
-    }
-
-    // Draw the projectiles
-    vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
-
-    for(int i = 0; i < plist->size(); i++)
-    {
-        if((*plist)[i]->isDead())
-        {
-            delete (*plist)[i];
-            plist->erase(plist->begin()+i);
-        }else{
-            (*plist)[i]->update(deltaTime);
-            (*plist)[i]->updateBounding();
-            (*plist)[i]->draw();
-        }
-    }
+		sp->setDeltaTime(deltaTime);
+		sp->update(deltaTime);
 
 
+		GLfloat lpos[4];
+		lpos[0]=g_LightPos.X; lpos[1]=g_LightPos.Y; lpos[2]=g_LightPos.Z; lpos[3]=1;
+		glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+
+		sp->draw();
+		sp->updateBounding();
+
+		// Draw every asteroid
+		vector<Asteroid*> *alist = Game::getInstance()->getAsteroidList();
+
+		for(int i = 0; i < alist->size(); i++)
+		{
+				if((*alist)[i]->isDead())
+				{
+						delete (*alist)[i];
+						alist->erase(alist->begin()+i);
+				}else{
+						(*alist)[i]->update(deltaTime);
+						(*alist)[i]->updateBounding();
+						(*alist)[i]->draw();
+				}
+		}
+
+		// Draw the earth
+		for(auto& planet : *Game::getInstance()->getPlanetList())
+		{
+				planet->update(deltaTime);
+				planet->updateBounding();
+				planet->draw();
+		}
+
+		// Draw the projectiles
+		vector<Projectile*> *plist = Game::getInstance()->getProjectileList();
+
+		for(int i = 0; i < plist->size(); i++)
+		{
+				if((*plist)[i]->isDead())
+				{
+						delete (*plist)[i];
+						plist->erase(plist->begin()+i);
+				}else{
+						(*plist)[i]->update(deltaTime);
+						(*plist)[i]->updateBounding();
+						(*plist)[i]->draw();
+				}
+		}
+
+		// Check for collisions
+		cd->react();
+
+		// Draw the skybox
+		game->drawSkybox();
+
+		// Draw the 2d stuff here
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		gluOrtho2D(0, g_WindowWidth,0, g_WindowHeight);
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glLoadIdentity();
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_LIGHTING);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+	// Hud schriften hier!!!!
+	glPushMatrix();
+		glTranslatef(0, g_WindowHeight-50, 0);
+		glColor3f(1, 1, 1);
+
+		string leftAsteroids = "Left Asteroids: " + to_string(Game::getInstance()->getAsteroidList()->size());
+		dtx_string(leftAsteroids.c_str());
+		glPopMatrix();
 
 
-    cd->react();
+		glPushMatrix();
+		glTranslatef(0, g_WindowHeight-75, 0);
 
-    if(sp->isDead())
-        exit(42);
+		string leftHealthOfEarth = "Earth Health: " + to_string((int)Game::getInstance()->getPlanetList()->at(0)->getHealth());
+		dtx_string(leftHealthOfEarth.c_str());
+		glPopMatrix();
 
-    game->drawSkybox();
+		glPushMatrix();
+		glTranslatef(0, 50, 0);
 
-    glutSwapBuffers();
-    glutPostRedisplay();
+		string leftHealthOfPlayer = "Players Health: " + to_string((int)sp->getHealth());
+		dtx_string(leftHealthOfPlayer.c_str());
+		glPopMatrix();
 
+		glPushMatrix();
+		glTranslatef(g_WindowWidth-325, g_WindowHeight-50, 0);
+
+		string creators = "Proudly made by\nLukas Hanningbrinck & \nRaphael Grewe";
+		dtx_string(creators.c_str());
+		glPopMatrix();
+
+		if(sp->isDead() || Game::getInstance()->getPlanetList()->at(0)->isDead())
+		{
+			glPushMatrix();
+			dtx_prepare(font, 150);
+			dtx_use_font(font, 150);
+			glTranslatef(g_WindowWidth/2-150, g_WindowHeight/2+150, 0);
+
+			string lost = " You\n LOST \n;-)";
+			dtx_string(lost.c_str());
+			dtx_prepare(font, 24);
+			dtx_use_font(font, 24);
+			glPopMatrix();
+		}
+
+		drawCrosshair();
+
+		glPopMatrix();
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_LIGHTING);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		glutSwapBuffers();
+	  glutPostRedisplay();
 }
 
 void drawCrosshair()
 {
     glPushMatrix();
-    glViewport(0, 0, g_WindowWidth, g_WindowHeight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, g_WindowWidth, g_WindowHeight, 0, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     glColor3ub(240, 240, 240);//white
@@ -343,20 +402,15 @@ void drawCrosshair()
 
     int crossHair[8] =
     {
-    g_WindowWidth / 2 - 7, g_WindowHeight / 2, // horizontal line
-    g_WindowWidth / 2 + 7, g_WindowHeight / 2,
+    g_WindowWidth / 2 - 7, g_WindowHeight / 2 +150, // horizontal line
+    g_WindowWidth / 2 + 7, g_WindowHeight / 2 +150,
 
-    g_WindowWidth / 2, g_WindowHeight / 2 + 7, //vertical line
-    g_WindowWidth / 2, g_WindowHeight / 2 - 7
+    g_WindowWidth / 2 , g_WindowHeight / 2 + 157, //vertical line
+    g_WindowWidth / 2 , g_WindowHeight / 2 + 143
     };
 
     // activate vertext array state and assign pointer to vertext array data
     glEnableClientState(GL_VERTEX_ARRAY);
-
-    //2 = number of coordinates per vertext we are doing 2d so I don't need the Z coordinate
-    // GL_INT = data type held in array
-    // crossHair = pointer to vertext data array
-
 
     glVertexPointer(2, GL_INT, 0, crossHair);
 

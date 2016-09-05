@@ -40,12 +40,13 @@ void Game::init()
                                           // generator.
 
     vector<string> SkyTex;
-    SkyTex.push_back(string("assets/skybox/right.bmp"));
-    SkyTex.push_back(string("assets/skybox/left.bmp"));
-    SkyTex.push_back(string("assets/skybox/top.bmp"));
-    SkyTex.push_back(string("assets/skybox/bottom.bmp"));
-    SkyTex.push_back(string("assets/skybox/back.bmp"));
-    SkyTex.push_back(string("assets/skybox/front.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxRT.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxLF.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxDN.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxUP.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxFT.bmp"));
+    SkyTex.push_back(string("assets/skybox/SkyBoxBK.bmp"));
+
 
     skybox = new Skybox(SkyTex,"assets/shader/SkyboxVertexShader.glsl", "assets/shader/SkyboxFragmentShader.glsl", fPlane*0.5f);
     ship = new Spaceship();
