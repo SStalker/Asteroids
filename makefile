@@ -25,4 +25,26 @@ all:
 	Game.cpp \
 	CollisionDetection.cpp \
 	SoundManager.cpp \
-	-o main $(OPTS)
+	-o Asteroids $(OPTS)
+
+mac: $(CC) -g -w -framework OpenGL -framework GLUT -std=c++11 \
+	main.cpp \
+	Vector.cpp \
+	Color.cpp \
+	Matrix.cpp \
+	ShaderProgram.cpp \
+	Model.cpp \
+	Material.cpp \
+	Texture.cpp \
+	Camera.cpp \
+	Rgbimage.cpp \
+	Spaceship.cpp \
+	GameObject.cpp \
+	Asteroid.cpp \
+	Projectile.cpp \
+	Planet.cpp \
+	Skybox.cpp \
+	Game.cpp \
+	CollisionDetection.cpp \
+	SoundManager.cpp \
+	-o Asteroids $(OPTS)
