@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
     glutInitWindowSize(g_WindowWidth, g_WindowHeight);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    windowid = glutCreateWindow("CG Praktikum");
+    windowid = glutCreateWindow("Asteroids made by Lukas Hannigbrinck and Raphael Grewe");
     // making the window full screen
     glutFullScreen();
     glutSetCursor(GLUT_CURSOR_NONE);
